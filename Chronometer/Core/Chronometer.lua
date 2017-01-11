@@ -722,7 +722,9 @@ function Chronometer:SPELL_PERIODIC(event, info)
 	end
 
 	aura = info.skill
-
+	
+	if aura == "Deep Wound" then aura = "Deep Wounds"  end   --TODO: table of elysium bugs
+	
 	local timer = self.timers[self.EVENT][aura]	
 	if timer and timer.k.g == isgain and (timer.x.a or (timer.v and timer.v > GetTime())) then
 		if timer.k.t then
