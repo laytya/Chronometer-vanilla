@@ -1,3 +1,3 @@
 # Chronometer-vanilla
 
-Copy "Chronometer" directory to your addons 
+Copy "Chronometer" folder from archive to your addons directory
