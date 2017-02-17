@@ -386,19 +386,6 @@ function Chronometer:StartTimer(timer, name, target, rank, durmod)
 	local color = timer.x.cr or self.db.profile.barcolor
 	local fade = 0.5
 
-	if name == "Rupture" then --LAYT
-	
-		self:Print("Rupture " .. duration)
-	
-	end
-	
-	if name == "Slice and Dice" then --LAYT
-	
-	--  self:Print("Slice and Dice " ..  duration)
-	
-	end
-	
-	
 	if timer.x.rc and self.db.profile.ghost then
 		fade = self.db.profile.ghost
 	end
@@ -684,10 +671,12 @@ function Chronometer:COMBAT_DEATH(event, info)
 	if info.type == "experience" then
 		-- If it's banished, then it can't possibly die - must be a duplicate NPC name
 		if info.source and not self:IsBanished(info.source) then
-			return self:KillBars(info.source)
+			self:ScheduleEvent(self.KillBars, 0.5, self, info.source)
+			return
 		end
 	elseif info.victim ~= ParserLib_SELF then
-		return self:KillBars(info.victim)
+		self:ScheduleEvent(self.KillBars, 0.5 self,info.victim)
+		return
 	end
 end
 

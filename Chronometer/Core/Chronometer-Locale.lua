@@ -90,6 +90,96 @@ L:RegisterTranslations("enUS", function() return {
 	["Improved Fire Totems"] = true,
 } end)
 
+L:RegisterTranslations("ruRU", function() return {
+	["Chronometer"] = "Chronometer",
+	["Chronometer - an Ace2 Timer Mod"] = "Chronometer - Ace2 таймер мод",
+
+	["Anchor"] = "Якорь",
+	["Shows the dragable anchor."] = "Показывать якорь для перетаскивания",
+
+	["Bar Scale"] = "Масштаб полос",
+	["Set the bar scale."] = "Настройка масштаба полос",
+	
+	["Bar Texture"] = "Текстура полос",
+	["Changes the texture of the timer bars."] = "Изменяет текстура полос таймера.",
+
+	["Bar Growth"] = "Рост полос",
+	["Toggles bar growing up or downwards."] = "Переключение роста полос вверх или вниз.",
+
+	["Fade"] = "Затухание",
+	["Toggles whether bars disappear when spells fade."] = "Вкл/Выкл. затухание полос, когда заклинание прекратилось.",
+
+	["Kill"] = "Убийства",
+	["Toggles whether bars disappear when killing things."] = "Вкл/Выкл. затухание полос, когда цель убита.",
+	
+	["Ghost"] = "Призрак",
+	["Change the amount of time that ghost bars stay up."] = "Изменить кол-во времени во время духа.",
+	
+	["Self"] = "Свои",
+	["Toggles bars for spell durations on the player."] = "Переключение длительности полос заклинаний на игроке.",
+	
+	["Reverse"] = "Обратно",
+	["Toggles if bars are reversed (fill up instead of emptying)."] = "Вкл./Выкл. переключение полос местами (заполнение вместо опустошения).",
+
+	["Test"] = "Тест",
+	["Runs test bars."] = "Запустить тест полос.",
+	
+	["Config"] = "Конфигурация",
+	["Show GUI Configuration Menu"] = "Показать графическое меню настроек.",
+	
+	["Bar Text"] = "Текст на полосе",
+	["Sets the text to be displayed on the bar."] = "Настройка отображаемого текста на полосе.",
+	["Use $s for spell name and $t for the target's name."] = "Используйте $s для имени заклинания и $t для имени цели.",
+	
+	["Bar Width"] = "Ширина полос",
+	["Set the bar width."] = "Настройка ширины полос.",
+	
+	["Bar Height"] = "Высота полос",
+	["Set the bar height."] = "Настройка высоты полос.",
+	
+	["Text Size"] = "Размер текста",
+	["Set the bar text size."] = "Установить размер текста на полосе.",
+	
+	["Text Color"] = "Цвет текста",
+	["Set the bar text color."] = "Установить цвет текста.",
+	
+	["Bar Color"] = "Цвет полосы",
+	["Set the default bar color."] = "Установить цвет полос по умолчанию.",
+	
+	["Background Alpha"] = "Фон альфа",
+	["Alpha value of the bar background."] = "Альфа значение для фона полос.",
+	
+	["Background Color"] = "Цвет фона",
+	["Set the bar background color."] = "Установить цвет фона.",
+	
+	["Bar"] = "Полосы",
+	["CandyBar options"] = "CandyBar поции",
+	
+	["Hide"] = "Скрыть",
+	
+	-- These all need to be added to Babble-Spell!!!
+	["Forbearance"] = "Воздержанность",
+	["Counterspell - Silenced"] = "Антимагия - немота",
+	["Faerie Fire (Feral)"] = "Волшебный огонь (зверь)",
+	["Starfire Stun"] = "Звездный огонь - оглушение",
+	["Shadow Vulnerability"] = "Уязвимость к Тьме",
+	["Kick - Silenced"] = "Пинок - немота",
+	["Remorseless"] = "Беспощадность",
+	["Enamored Water Spirit"] = "Enamored Water Spirit", -- old
+	["Ancestral Fortitude"] = "Стойкость предков",
+	["Soul Siphon"] = "Вытягивание души",
+	["Charge Stun"] = "Атака-оглушение",
+	["Intercept Stun"] = "Перехват - оглушение",
+	["Shield Bash - Silenced"] = "Удар щитом - немота",
+	["Weakened Soul"] = "Ослабленная душа",
+	["Frost Trap Aura"] = "Аура ледяной ловушки",
+	["Quick Shots"] = "Скорострельность",
+	["Swiftmend"] = "Быстрое восстановление",
+	["Healing Way"] = "Путь исцеления",
+	["Winter's Chill"] = "Зимняя стужа",
+	["Improved Fire Totems"] = "Улучшенный тотем огня",
+} end)
+
 L:RegisterTranslations("deDE", function() return {
 	--["Chronometer"] = true,
 	--["Chronometer - an Ace2 Timer Mod"] = true,

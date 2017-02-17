@@ -37,7 +37,8 @@ Chronometer is still undergoing heavy development, so please bear with me!
 == Fixes ==
 
 * Fixed SnD timers to work in KRONOS (LaYt)
-
++ Fixed #1 "Bars not disappearing after kill"
++ Added ruRU locale
 
 == TODO: ==
 * Go through and make sure that all spell timers are accurate
