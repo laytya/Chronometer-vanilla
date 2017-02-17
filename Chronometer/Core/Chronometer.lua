@@ -675,7 +675,7 @@ function Chronometer:COMBAT_DEATH(event, info)
 			return
 		end
 	elseif info.victim ~= ParserLib_SELF then
-		self:ScheduleEvent(self.KillBars, 0.5 self,info.victim)
+		self:ScheduleEvent(self.KillBars, 0.5, self,info.victim)
 		return
 	end
 end
