@@ -1,6 +1,6 @@
 --[[
 Name: AceEvent-2.0
-Revision: $Rev: 16541 $
+Revision: $Rev: 17803 $
 Developed by: The Ace Development Team (http://www.wowace.com/index.php/The_Ace_Development_Team)
 Inspired By: Ace 1.x by Turan (turan@gryphon.com)
 Website: http://www.wowace.com/
@@ -12,11 +12,12 @@ Dependencies: AceLibrary, AceOO-2.0
 ]]
 
 local MAJOR_VERSION = "AceEvent-2.0"
-local MINOR_VERSION = "$Revision: 16541 $"
+local MINOR_VERSION = "$Revision: 17803 $"
 
 if not AceLibrary then error(MAJOR_VERSION .. " requires AceLibrary") end
 if not AceLibrary:IsNewVersion(MAJOR_VERSION, MINOR_VERSION) then return end
 
+if loadstring("return function(...) return ... end") and AceLibrary:HasInstance(MAJOR_VERSION) then return end -- lua51 check
 if not AceLibrary:HasInstance("AceOO-2.0") then error(MAJOR_VERSION .. " requires AceOO-2.0") end
 
 local AceOO = AceLibrary:GetInstance("AceOO-2.0")
@@ -208,6 +209,8 @@ function AceEvent:TriggerEvent(event, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a
 	end
 	local _G_event = _G.event
 	_G.event = event
+	local lastEvent = AceEvent.currentEvent
+	AceEvent.currentEvent = event
 
 	local AceEvent_onceRegistry = AceEvent.onceRegistry
 	local AceEvent_debugTable = AceEvent.debugTable
@@ -386,6 +389,7 @@ function AceEvent:TriggerEvent(event, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a
 		del(tmp)
 	end
 	_G.event = _G_event
+	AceEvent.currentEvent = lastEvent
 end
 
 -- local accessors
@@ -949,10 +953,13 @@ function AceEvent:activate(oldLib, oldDeactivate)
 		end)
 		self:RegisterEvent("LANGUAGE_LIST_CHANGED", function()
 			if self.registry["MEETINGSTONE_CHANGED"] and self.registry["MEETINGSTONE_CHANGED"][self] then
+				registeringFromAceEvent = true
 				self:UnregisterEvent("MEETINGSTONE_CHANGED")
 				self:RegisterEvent("MINIMAP_ZONE_CHANGED", f, true)
+				registeringFromAceEvent = nil
 			end
 		end)
+		self:ScheduleEvent("AceEvent_FullyInitialized", func, 10)
 		registeringFromAceEvent = nil
 	end
 

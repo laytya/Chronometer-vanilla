@@ -1,6 +1,6 @@
 --[[
 Name: AceDebug-2.0
-Revision: $Rev: 15024 $
+Revision: $Rev: 17638 $
 Developed by: The Ace Development Team (http://www.wowace.com/index.php/The_Ace_Development_Team)
 Inspired By: Ace 1.x by Turan (turan@gryphon.com)
 Website: http://www.wowace.com/
@@ -11,11 +11,12 @@ Dependencies: AceLibrary, AceOO-2.0
 ]]
 
 local MAJOR_VERSION = "AceDebug-2.0"
-local MINOR_VERSION = "$Revision: 15024 $"
+local MINOR_VERSION = "$Revision: 17638 $"
 
 if not AceLibrary then error(MAJOR_VERSION .. " requires AceLibrary") end
 if not AceLibrary:IsNewVersion(MAJOR_VERSION, MINOR_VERSION) then return end
 
+if loadstring("return function(...) return ... end") and AceLibrary:HasInstance(MAJOR_VERSION) then return end -- lua51 check
 if not AceLibrary:HasInstance("AceOO-2.0") then error(MAJOR_VERSION .. " requires AceOO-2.0") end
 
 local DEBUGGING, TOGGLE_DEBUGGING
@@ -35,6 +36,9 @@ elseif GetLocale() == "zhTW" then
 elseif GetLocale() == "zhCN" then
 	DEBUGGING = "\232\176\131\232\175\149"
 	TOGGLE_DEBUGGING = "\229\144\175\231\148\168/\231\166\129\231\148\168 \232\176\131\232\175\149"
+elseif GetLocale() == "ruRU" then
+	DEBUGGING = "Отладка"
+	TOGGLE_DEBUGGING = "Вкл/Выкл отладку для этого аддона."
 else -- enUS
 	DEBUGGING = "Debugging"
 	TOGGLE_DEBUGGING = "Enable/disable debugging"

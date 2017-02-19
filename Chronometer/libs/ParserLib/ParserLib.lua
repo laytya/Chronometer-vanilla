@@ -1,6 +1,6 @@
 --[[
 Name: ParserLib
-Revision: $Revision: 13749 $
+Revision: $Revision: 15186 $
 Author(s): rophy (rophy123@gmail.com)
 Website: http://www.wowace.com/index.php/ParserLib
 Documentation: http://www.wowace.com/index.php/ParserLib
@@ -14,7 +14,7 @@ Dependencies: CompostLib (optional) or Compost-2.0 (optional).
 -- 	local parser = ParserLib:GetInstance(version)
 -- 	where the version is the variable 'vmajor' you see here.
 ---------------------------------------------------------------------------
-local vmajor, vminor = "1.1", tonumber(string.sub("$Revision: 13749 $", 12, -3))
+local vmajor, vminor = "1.1", tonumber(string.sub("$Revision: 15186 $", 12, -3))
 
 local stubvarname = "TekLibStub"
 local libvarname = "ParserLib"
@@ -24,6 +24,12 @@ local libvarname = "ParserLib"
 local libobj = getglobal(libvarname)
 if libobj and not libobj:NeedsUpgraded(vmajor, vminor) then return end
 
+local lua51 = loadstring("return function(...) return ... end") and true or false
+local string_gmatch = lua51 and string.gmatch or string.gfind
+
+local function print(msg, r, g, b)
+	ChatFrame1:AddMessage(string.format("<%s-%s-%s> %s", libvarname, vmajor, vminor, msg), r, g, b)
+end
 
 ---------------------------------------------------------------------------
 -- Embedded Library Registration Stub
@@ -131,8 +137,8 @@ function lib:LibActivate(stub, oldLib, oldList)
 		self:OnLoad()
 
 		if omin < 11 and oldLib.clients then
-			for event in oldLib.clients do
-				for i in oldLib.clients[event] do
+			for event in pairs(oldLib.clients) do
+				for i in pairs(oldLib.clients[event]) do
 					if type(oldLib.clients[event][i]["func"]) == "string" then
 						oldLib.clients[event][i]["func"] = getglobal(oldLib.clients[event][i]["func"])
 					end
@@ -167,7 +173,7 @@ end
 function lib:RegisterEvent(addonID, event, handler)
 
 	local eventExist
-	for i, v in self.supportedEvents do
+	for i, v in pairs(self.supportedEvents) do
 		if v == event then
 			eventExist = true
 			break
@@ -201,7 +207,7 @@ end
 -- Check if you have registered an event.
 function lib:IsEventRegistered(addonID, event)
 	if self.clients[event] then
-		for i, v in self.clients[event] do
+		for i, v in pairs(self.clients[event]) do
 			if v.id == addonID then return true end
 		end
 	end
@@ -214,7 +220,7 @@ function lib:UnregisterEvent(addonID, event)
 	
 	if not self.clients[event] then return end
 	
-	for i, v in self.clients[event] do
+	for i, v in pairs(self.clients[event]) do
 		if v.id == addonID then
 			-- self:Print( format("Removing %s from %s", v.id, event) )		 -- debug
 			table.remove(self.clients[event], i)
@@ -234,10 +240,10 @@ end
 function lib:UnregisterAllEvents(addonID)
 	local event, index, empty;
 	
-	for event in self.clients do
+	for event in pairs(self.clients) do
 		empty = true;
 		
-		for i, v in self.clients[event] do
+		for i, v in pairs(self.clients[event]) do
 			if v.id == addonID then
 				-- self:Print( format("Removing %s for %s", v.id, event) ) -- debug
 				table.remove(self.clients[event], i)
@@ -307,9 +313,9 @@ local function PatternCompare(a, b)
 	if not pb then ChatFrame1:AddMessage("|cffff0000Nil pattern: ".. b.."|r") end
 		
 	local ca=0
-	for _ in string.gfind(pa, "%%%d?%$?[sd]") do ca=ca+1 end
+	for _ in string_gmatch(pa, "%%%d?%$?[sd]") do ca=ca+1 end
 	local cb=0
-	for _ in string.gfind(pb, "%%%d?%$?[sd]") do cb=cb+1 end
+	for _ in string_gmatch(pb, "%%%d?%$?[sd]") do cb=cb+1 end
 
 	pa = string.gsub(pa, "%%%d?%$?[sd]", "")	
 	pb = string.gsub(pb, "%%%d?%$?[sd]", "")
@@ -450,7 +456,7 @@ function lib:ConvertPattern(pattern, anchor)
 		local idx = 1; -- incremental index into field[]
 
 		local tmpSeq = {}
-		for i in string.gfind(pattern,"%%(%d)%$.") do
+		for i in string_gmatch(pattern,"%%(%d)%$.") do
 			tmpSeq[idx] = tonumber(i);
 			idx = idx + 1
 		end
@@ -555,12 +561,12 @@ function lib:NotifyClients(event)
 	local info = self:GetCompost():Acquire()	
 -- 	self.timer.Compost_Acquire = GetTime() - timer + self.timer.Compost_Acquire -- timer
 
-	for i, client in self.clients[event] do
+	for i, client in pairs(self.clients[event]) do
 		-- self:Print(event .. ", calling " .. client.id) -- debug
 				
 		-- I can just do a compost:Recycle() here, but I hope this can improve the performance.
-		for j in info do if not self.info[j] then info[j] = nil end end
-		for j, v in self.info do info[j] = v end
+		for j in pairs(info) do if not self.info[j] then info[j] = nil end end
+		for j, v in pairs(self.info) do info[j] = v end
 		
 		client.func(event, info)
 	end
@@ -571,9 +577,7 @@ function lib:NotifyClients(event)
 
 end
 
-function lib:Print(msg, r, g, b)	
-	ChatFrame1:AddMessage(string.format("<%s-%s-%s> %s", libvarname, vmajor, vminor, msg), r, g, b)
-end
+lib.Print = print
 
 -- load pattern list & info
 function lib:PreLoadPatternInfo(event)
@@ -582,7 +586,7 @@ function lib:PreLoadPatternInfo(event)
 	if not self.eventTable[event] then self.eventTable[event] = self:LoadPatternList(event) end
 	local list = self.eventTable[event]
 	if list then
-		for i, v in list do
+		for i, v in pairs(list) do
 			if not self.patternTable[v] then self.patternTable[v] = self:LoadPatternInfo(v) end
 		end
 	end
@@ -596,19 +600,13 @@ function lib:ParseMessage(message, event)
 
 -- --	local currTime -- timer
 
-	-- if event == "CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF" then
 	
-	--	self:Print(message .. " - "..event)
-	-- end
 -- 	currTime = GetTime() -- timer
 	if not self.eventTable[event] then self.eventTable[event] = self:LoadPatternList(event) end -- loaded by registering already
 	local list = self.eventTable[event]
 -- 	self.timer.ParseMessage_LoadPatternList = self.timer.ParseMessage_LoadPatternList + GetTime() - currTime -- timer
 	
-	if not list then 
-		 -- self:Print("NO LIST")
-		return 
-	end
+	if not list then return end
 
 	-- Get the table to store parsed results.
 	if not self.info then 
@@ -626,7 +624,6 @@ function lib:ParseMessage(message, event)
 	local pattern = self:FindPattern(message, list)
 -- 	self.timer.ParseMessage_FindPattern = GetTime() - currTime + self.timer.ParseMessage_FindPattern -- timer
 
-	
 	
 	if not pattern then 
 		-- create "unknown" event type.
@@ -661,23 +658,13 @@ function lib:FindPattern(message, patternList)
 	
 	local pt, timer, found
 
-	for i, v in patternList do
+	for i, v in pairs(patternList) do
 	
-		--if (message == "Your Sinister Strike was dodged by Thunderhead Stagwing.") then
-		--	self:Print(v)
-		--end
 -- 				timer = GetTime() -- timer
 		if not self.patternTable[v] then self.patternTable[v] = self:LoadPatternInfo(v) end -- loaded by registering already
 -- 		self.timer.ParseMessage_FindPattern_LoadPatternInfo = GetTime() - timer + self.timer.ParseMessage_FindPattern_LoadPatternInfo -- timer
 		
-		
-		
-		
 		pt = self.patternTable[v]
-		
-		if v == "SpellMissSelf" then
-			self:Print(message.." = " .. v .. ":" )  -- debug
-		end
 		
 		found = false
 
@@ -754,7 +741,7 @@ function lib:ParseInformation(patternName)
 	local info = self.info
 
 	-- Create an info table from pattern table, copies everything except the pattern string.	
-	for i, v in patternInfo do
+	for i, v in pairs(patternInfo) do
 		if i == 1 then
 			info.type = v
 		elseif type(i) == "number" then
@@ -780,7 +767,7 @@ function lib:ParseInformation(patternName)
 end
 
 function lib:ConvertTypes(info)
-	for i in info do
+	for i in pairs(info) do
 		if string.find(i, "^amount") then info[i] = tonumber(info[i]) end
 	end
 end
@@ -803,7 +790,7 @@ function lib:Curry(pattern)
 	local DoNothing = function(tok) return tok end	
 	
 	tt = {}
-	for tk in string.gfind(pattern, "%%%d?%$?([sd])") do
+	for tk in string_gmatch(pattern, "%%%d?%$?([sd])") do
 		table.insert(tt, tk)
 	end	
 	
@@ -959,7 +946,7 @@ end
 
 
 function lib:PrintTable(args)
-	for k, v in args do
+	for k, v in pairs(args) do
 		ChatFrame1:AddMessage(tostring(k) .. " = " .. tostring(v));
 	end
 	ChatFrame1:AddMessage("");
@@ -976,10 +963,10 @@ function lib:TestPatterns(sendToClients)
 	local testNumber = 123
 	local message
 	local messages = self:GetCompost():Acquire()
-	for patternName in self.patternTable do
+	for patternName in pairs(self.patternTable) do
 		messages[patternName] = self:GetCompost():Acquire()
 		messages[patternName].message = getglobal(patternName)
-		for i, v in self.patternTable[patternName] do
+		for i, v in pairs(self.patternTable[patternName]) do
 			if i ~= "tc" and type(v) == "number" and v < 100 and i~=1 then
 				messages[patternName][v] =  self:GetInfoFieldName(self.patternTable[patternName][1], i)
 			end
@@ -1000,8 +987,8 @@ function lib:TestPatterns(sendToClients)
 	local startTime = GetTime() 
 	local startMem = gcinfo()
 	
-	for _, event in self.supportedEvents do
-		for _, pattern in self:LoadPatternList(event) do
+	for _, event in pairs(self.supportedEvents) do
+		for _, pattern in pairs(self:LoadPatternList(event)) do
 			msg = messages[pattern].message
 			if sendToClients then self:OnEvent(event, msg)	end
 			if self:ParseMessage(msg, event) then
@@ -1030,8 +1017,8 @@ end
 function lib:LoadEverything()
 
 	-- Load all patterns and events.
-	for _, v in self.supportedEvents do	
-		for _, w in self:LoadPatternList(v) do
+	for _, v in pairs(self.supportedEvents) do
+		for _, w in pairs(self:LoadPatternList(v)) do
 			if not self.patternTable[w] then
 				self.patternTable[w] = self:LoadPatternInfo(w)
 			end
@@ -1044,20 +1031,20 @@ function lib:PrintTimers()
 	if not self.timer then return end
 
 	local total = 0
-	for i in self.timer do
+	for i in pairs(self.timer) do
 		total = total + self.timer[i]
 	end
 
 	if not self.timerIndex then 
 		self.timerIndex = {}
-		for i in self.timer do
+		for i in pairs(self.timer) do
 			table.insert(self.timerIndex, i)
 		end
 		table.sort(self.timerIndex)
 	end
 
 	DEFAULT_CHAT_FRAME:AddMessage("Time\t%\tDescription")
-	for i, idx in self.timerIndex do
+	for i, idx in pairs(self.timerIndex) do
 		DEFAULT_CHAT_FRAME:AddMessage(string.format("%.3f\t%.1f\t%s", self.timer[idx], 100*self.timer[idx]/total, idx) )
 	end	
 	
@@ -1452,32 +1439,24 @@ function lib:LoadPatternList(eventName)
 		
 	elseif eventName == "CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF" then
 		if not self.eventTable["CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF"] then
-			self.eventTable["CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF"] = 
-				self:LoadPatternCategoryTree( {
-					{
+			self.eventTable["CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF"] = {
 						"SPELLRESISTOTHEROTHER",
 						"SPELLRESISTSELFOTHER",
 						"DAMAGESHIELDOTHEROTHER",
 						"DAMAGESHIELDSELFOTHER",
-					},
-					"SpellMissSelf",
-				} )
+			}
 			table.sort(self.eventTable["CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF"] , PatternCompare)
 		end
 		list = self.eventTable["CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF"]	
 		
 	elseif eventName == "CHAT_MSG_SPELL_DAMAGESHIELDS_ON_OTHERS" then
 		if not self.eventTable["CHAT_MSG_SPELL_DAMAGESHIELDS_ON_OTHERS"] then
-			self.eventTable["CHAT_MSG_SPELL_DAMAGESHIELDS_ON_OTHERS"] = 
-				self:LoadPatternCategoryTree( {
-					{
+			self.eventTable["CHAT_MSG_SPELL_DAMAGESHIELDS_ON_OTHERS"] = {
 						"SPELLRESISTOTHEROTHER",
 						"SPELLRESISTOTHERSELF",
 						"DAMAGESHIELDOTHEROTHER",
 						"DAMAGESHIELDOTHERSELF",
-					},
-					SpellMissOther,
-				} )
+			}
 			table.sort(self.eventTable["CHAT_MSG_SPELL_DAMAGESHIELDS_ON_OTHERS"] , PatternCompare)
 		end		
 		list = self.eventTable["CHAT_MSG_SPELL_DAMAGESHIELDS_ON_OTHERS"]
@@ -1972,7 +1951,7 @@ function lib:LoadPatternCategoryTree(catTree, reSort)
 	local resultList = {}
 	local list
 	
-	for i, v in catTree do
+	for i, v in pairs(catTree) do
 	
 		if type(v) == "table" then
 			list = self:LoadPatternCategoryTree(v, true)
@@ -1981,7 +1960,7 @@ function lib:LoadPatternCategoryTree(catTree, reSort)
 			table.sort(list, PatternCompare)
 		end
 		
-		for j, w in list do
+		for j, w in pairs(list) do
 			table.insert(resultList, w)
 		end
 		
@@ -2534,7 +2513,7 @@ function lib:LoadPatternInfo(patternName)
 	
 	-- How many regexp tokens in this pattern?
 	local tc = 0
-	for _ in string.gfind(pattern, "%%%d?%$?([sd])") do 	tc = tc + 1	end
+	for _ in string_gmatch(pattern, "%%%d?%$?([sd])") do tc = tc + 1 end
 	
 	-- Convert string.format tokens into LUA regexp tokens.
 	pattern = { self:ConvertPattern(pattern, true) }		
@@ -2542,7 +2521,7 @@ function lib:LoadPatternInfo(patternName)
 	local n = table.getn(pattern)	
 	if n > 1 then	-- Extra return values are the remapped token sequences.
 	
-		for j in patternInfo do
+		for j in pairs(patternInfo) do
 			if type(patternInfo[j]) == "number" and patternInfo[j] < 100 then
 				patternInfo[j] = pattern[patternInfo[j]+1]	-- Remap to correct token sequence.
 			end
