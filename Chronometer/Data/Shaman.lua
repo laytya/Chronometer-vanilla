@@ -2,7 +2,6 @@
 -- Setup Timers                                                               --
 --<< ====================================================================== >>--
 local BS = AceLibrary("Babble-Spell-2.2")
-local L = AceLibrary("AceLocale-2.2"):new("Chronometer")
 
 function Chronometer:ShamanSetup()
 	local _, eclass = UnitClass("player")
@@ -19,7 +18,7 @@ function Chronometer:ShamanSetup()
 	self:AddTimer(self.SPELL, BS["Strength of Earth Totem"], 120, 0,1,0, { gr=1, rc=true })
 	self:AddTimer(self.SPELL, BS["Tremor Totem"],            120, 0,1,0, { gr=1, rc=true })
 
-	self:AddTimer(self.SPELL, BS["Fire Nova Totem"],          5, 0,1,0, { gr=2, rc=true, d={tn=L["Improved Fire Totems"], tb=-1}})
+	self:AddTimer(self.SPELL, BS["Fire Nova Totem"],          5, 0,1,0, { gr=2, rc=true, d={tn=BS["Improved Fire Totems"], tb=-1}})
 	self:AddTimer(self.SPELL, BS["Flametongue Totem"],       120, 0,1,0, { gr=2, rc=true })
 	self:AddTimer(self.SPELL, BS["Frost Resistance Totem"],  120, 0,1,0, { gr=2, rc=true })
 	self:AddTimer(self.SPELL, BS["Magma Totem"],             20, 0,1,0, { gr=2, rc=true })
@@ -34,7 +33,7 @@ function Chronometer:ShamanSetup()
 	self:AddTimer(self.SPELL, BS["Windwall Totem"],          120, 0,1,0, { gr=3, rc=true })
 
 	self:AddTimer(self.SPELL, BS["Disease Cleansing Totem"], 120, 0,1,0, { gr=4, rc=true })
-	self:AddTimer(self.SPELL, L["Enamored Water Spirit"],   24, 0,1,0, { gr=4, rc=true })
+	self:AddTimer(self.SPELL, BS["Enamored Water Spirit"],   24, 0,1,0, { gr=4, rc=true })
 	self:AddTimer(self.SPELL, BS["Fire Resistance Totem"],   120, 0,1,0, { gr=4, rc=true })
 	self:AddTimer(self.SPELL, BS["Healing Stream Totem"],    60, 0,1,0, { gr=4, rc=true })
 	self:AddTimer(self.SPELL, BS["Mana Spring Totem"],       60, 0,1,0, { gr=4, rc=true })
@@ -46,12 +45,12 @@ function Chronometer:ShamanSetup()
 	self:AddTimer(self.SPELL, BS["Frost Shock"],  8, 1,0,0, { rc=true})
 	self:AddTimer(self.SPELL, BS["Stormstrike"], 12, 0,1,1)
 
-	self:AddTimer(self.SPELL, BS["Healing Wave"],        0, 1,1,0, { ea={[L["Ancestral Fortitude"]]=1, [L["Healing Way"]]=1} })
-	self:AddTimer(self.SPELL, BS["Lesser Healing Wave"], 0, 1,1,0, { ea={[L["Ancestral Fortitude"]]=1} })
+	self:AddTimer(self.SPELL, BS["Healing Wave"],        0, 1,1,0, { ea={[BS["Ancestral Fortitude"]]=1, [BS["Healing Way"]]=1} })
+	self:AddTimer(self.SPELL, BS["Lesser Healing Wave"], 0, 1,1,0, { ea={[BS["Ancestral Fortitude"]]=1} })
 
-	self:AddTimer(self.EVENT, L["Ancestral Fortitude"],  15, 1,1,0, { cr="GREEN", a=1, xn=BS["Ancestral Healing"] })
-	self:AddTimer(self.EVENT, BS["Clearcasting"],        15, 0,1,1, { cr="GREEN", a=1, tx="Interface\\Icons\\Spell_Shadow_ManaBurn" })
-	self:AddTimer(self.EVENT, L["Healing Way"],         15, 1,1,0, { cr="GREEN" })
+	self:AddTimer(self.EVENT, BS["Ancestral Fortitude"],  15, 1,1,0, { cr="GREEN", a=1 })
+	self:AddTimer(self.EVENT, BS["Clearcasting"],        15, 0,1,1, { cr="GREEN", a=1 })
+	self:AddTimer(self.EVENT, BS["Healing Way"],         15, 1,1,0, { cr="GREEN" })
 end
 
 table.insert(Chronometer.dataSetup, Chronometer.ShamanSetup)

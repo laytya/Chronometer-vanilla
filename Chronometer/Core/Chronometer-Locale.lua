@@ -68,25 +68,6 @@ L:RegisterTranslations("enUS", function() return {
 	["Hide"] = true,
 	
 	-- These all need to be added to Babble-Spell!!!
-	["Forbearance"] = true,
-	["Counterspell - Silenced"] = true,
-	["Faerie Fire (Feral)"] = true,
-	["Starfire Stun"] = true,
-	["Shadow Vulnerability"] = true,
-	["Kick - Silenced"] = true,
-	["Remorseless"] = true,
-	["Enamored Water Spirit"] = true,
-	["Ancestral Fortitude"] = true,
-	["Soul Siphon"] = true,
-	["Charge Stun"] = true,
-	["Intercept Stun"] = true,
-	["Shield Bash - Silenced"] = true,
-	["Weakened Soul"] = true,
-	["Frost Trap Aura"] = true,
-	["Quick Shots"] = true,
-	["Swiftmend"] = true,
-	["Healing Way"] = true,
-	["Winter's Chill"] = true,
 	["Improved Fire Totems"] = true,
 } end)
 
@@ -158,25 +139,7 @@ L:RegisterTranslations("ruRU", function() return {
 	["Hide"] = "Скрыть",
 	
 	-- These all need to be added to Babble-Spell!!!
-	["Forbearance"] = "Воздержанность",
-	["Counterspell - Silenced"] = "Антимагия - немота",
-	["Faerie Fire (Feral)"] = "Волшебный огонь (зверь)",
-	["Starfire Stun"] = "Звездный огонь - оглушение",
-	["Shadow Vulnerability"] = "Уязвимость к Тьме",
-	["Kick - Silenced"] = "Пинок - немота",
-	["Remorseless"] = "Беспощадность",
-	["Enamored Water Spirit"] = "Enamored Water Spirit", -- old
-	["Ancestral Fortitude"] = "Стойкость предков",
-	["Soul Siphon"] = "Вытягивание души",
-	["Charge Stun"] = "Атака-оглушение",
-	["Intercept Stun"] = "Перехват - оглушение",
-	["Shield Bash - Silenced"] = "Удар щитом - немота",
-	["Weakened Soul"] = "Ослабленная душа",
-	["Frost Trap Aura"] = "Аура ледяной ловушки",
-	["Quick Shots"] = "Скорострельность",
-	["Swiftmend"] = "Быстрое восстановление",
-	["Healing Way"] = "Путь исцеления",
-	["Winter's Chill"] = "Зимняя стужа",
+	
 	["Improved Fire Totems"] = "Улучшенный тотем огня",
 } end)
 
@@ -248,22 +211,7 @@ L:RegisterTranslations("deDE", function() return {
 	--["Hide"] = true,
 	
 	-- These all need to be added to Babble-Spell!!!
-	["Forbearance"] = "Vorahnung",
-	["Counterspell - Silenced"] = "Gegenzauber - zum Schweigen gebracht",
-	["Faerie Fire (Feral)"] = "Feenfeuer (Tiergestalt)",
-	["Starfire Stun"] = "Sternenfeuer-Betubung",
-	["Shadow Vulnerability"] = "Schattenverwundbarkeit",
-	["Kick - Silenced"] = "Tritt - zum Schweigen gebracht",
-	["Remorseless"] = "Gnadenlos",
-	["Enamored Water Spirit"] = "Entzckter Wassergeist",
-	["Ancestral Fortitude"] = "Seelenstrke der Ahnen",
-	["Soul Siphon"] = "Seelen-Siphon",
-	["Charge Stun"] = "Sturmangriffsbetubung",
-	["Intercept Stun"] = "Betubung abfangen",
-	["Shield Bash - Silenced"] = "Schildhieb - zum Schweigen gebracht",
-	["Weakened Soul"] = "Geschwächte Seele",
-	["Frost Trap Aura"] = "Frostfalle-Aura",
-	["Quick Shots"] = "Schnelle Schüsse",
+	
 	--["Swiftmend"] = true,
 	--["Healing Way"] = true,
 	--["Winter's Chill"] = true,
@@ -338,26 +286,7 @@ L:RegisterTranslations("frFR", function() return {
 	--["Hide"] = true,
 	
 	-- These all need to be added to Babble-Spell!!!
-	["Forbearance"] = "Longanimit\195\169",
-	["Counterspell - Silenced"] = "Contresort - Silencieux",
-	["Faerie Fire (Feral)"] = "Lucioles (farouche)",
-	["Starfire Stun"] = "Feu stellaire \195\169tourdissant",
-	["Shadow Vulnerability"] = "Vuln\195\169rabilit\195\169 \195\160 l'ombre",
-	["Kick - Silenced"] = "Coup de pied - Silencieux",
-	["Remorseless"] = "Impitoyable",
-	["Enamored Water Spirit"] = "Esprit de l'eau amoureux",
-	["Ancestral Fortitude"] = "Robustesse des anciens",
-	["Soul Siphon"] = "Siphon d'\195\162me",
-	["Charge Stun"] = "Charge \195\169tourdissante",
-	["Intercept Stun"] = "Interception \195\169tourdissante",
-	["Shield Bash - Silenced"] = "Coup de bouclier - silencieux",  -- seems to be the only "- Silenced" not having a Cap letter, will try to test!
-	["Weakened Soul"] = "Ame affaiblie",
-	["Frost Trap Aura"] = "Effet Pi\195\168ge de givre",
-	["Quick Shots"] = "Tir rapide",
-	["Swiftmend"] = "Prompte Gu\195\169rison",
-	["Healing Way"] = "Flots de soins",
-	["Winter's Chill"] = "Froid Hivernal",
-	--["Improved Fire Totems"] = true,
+	
 } end)
 
 L:RegisterTranslations("koKR", function() return {
@@ -428,26 +357,7 @@ L:RegisterTranslations("koKR", function() return {
 	["Hide"] = "숨기기",
 	
 	-- These all need to be added to Babble-Spell!!!
-	["Forbearance"] = "참을성",
-	["Counterspell - Silenced"] = "마법 차단 - 침묵",
-	["Faerie Fire (Feral)"] = "요정의 불꽃 (야성)",
-	["Starfire Stun"] = "별빛 화살 기절",
-	["Shadow Vulnerability"] = "암흑 저항력 약화",
-	["Kick - Silenced"] = "발차기 - 침묵",
-	["Remorseless"] = "냉혹함",
-	["Enamored Water Spirit"] = "사로잡힌 물의 정령",
-	["Ancestral Fortitude"] = "선인의 인내",
-	["Soul Siphon"] = "영혼 착취",
-	["Charge Stun"] = "돌진 기절",
-	["Intercept Stun"] = "봉쇄 기절",
-	["Shield Bash - Silenced"] = "방패 가격 - 침묵",
-	["Weakened Soul"] = "약화된 영혼",
-	["Frost Trap Aura"] = "냉기의 덫",
-	["Quick Shots"] = "신속 사격",
-	["Swiftmend"] = "신속한 치유",
-	["Healing Way"] = "치유의 길",
-	["Winter's Chill"] = "혹한의 추위",
-	--["Improved Fire Totems"] = true,
+	
 } end)
 
 L:RegisterTranslations("zhCN", function() return {
@@ -518,24 +428,5 @@ L:RegisterTranslations("zhCN", function() return {
 	["Hide"] = "隐藏",
 	
 	-- These all need to be added to Babble-Spell!!!
-	["Forbearance"] = "自律",
-	["Counterspell - Silenced"] = "法术反制 - 沉默",
-	["Faerie Fire (Feral)"] = "精灵之火（野性）",
-	["Starfire Stun"] = "星火昏迷",
-	["Shadow Vulnerability"] = "暗影易伤",
-	["Kick - Silenced"] = "脚踢 - 沉默",
-	["Remorseless"] = "冷酷",
-	["Enamored Water Spirit"] = "被迷惑的水之魂",
-	["Ancestral Fortitude"] = "先祖坚韧",
-	["Soul Siphon"] = "灵魂虹吸",
-	["Charge Stun"] = "冲锋击昏",
-	["Intercept Stun"] = "拦截昏迷",
-	["Shield Bash - Silenced"] = "盾击 - 沉默",
-	["Weakened Soul"] = "虚弱灵魂",
-	["Frost Trap Aura"] = "冰霜陷阱光环",
-	["Quick Shots"] = "快速射击",
-	["Swiftmend"] = "迅捷治愈",
-	["Healing Way"] = "治疗之道",
-	["Winter's Chill"] = "深冬之寒",
-	--["Improved Fire Totems"] = true,
+	
 } end)

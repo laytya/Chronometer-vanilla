@@ -2,7 +2,6 @@
 -- Setup Timers                                                               --
 --<< ====================================================================== >>--
 local BS = AceLibrary("Babble-Spell-2.2")
-local L = AceLibrary("AceLocale-2.2"):new("Chronometer")
 
 function Chronometer:RogueSetup()
 	local _, eclass = UnitClass("player")
@@ -27,9 +26,9 @@ function Chronometer:RogueSetup()
 	self:AddTimer(self.SPELL, BS["Sprint"],          15, 0,1,1)
 	self:AddTimer(self.SPELL, BS["Vanish"],          10, 0,1,1)
 
-	self:AddTimer(self.EVENT, L["Kick - Silenced"],    2, 1,0,0, { cr="GREEN" })
+	self:AddTimer(self.EVENT, BS["Kick - Silenced"],    2, 1,0,0, { cr="GREEN" })
 	self:AddTimer(self.EVENT, BS["Mace Stun Effect"], 3, 1,0,0, { cr="GREEN", a=1, xn=BS["Mace Specialization"] })
-	self:AddTimer(self.EVENT, L["Remorseless"],     20, 0,1,1, { cr="GREEN", a=1, xn=BS["Remorseless Attacks"] })
+	self:AddTimer(self.EVENT, BS["Remorseless"],     20, 0,1,1, { cr="GREEN", a=1 })
 
 	--self:AddTimer(A.SKILL, C.RIPOSTE,          5, 0,1,1, { cr="YELLOW" })
 end

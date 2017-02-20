@@ -2,7 +2,6 @@
 -- Setup Timers                                                               --
 --<< ====================================================================== >>--
 local BS = AceLibrary("Babble-Spell-2.2")
-local L = AceLibrary("AceLocale-2.2"):new("Chronometer")
 
 function Chronometer:RacialSetup()
 

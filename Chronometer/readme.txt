@@ -40,6 +40,11 @@ Chronometer is still undergoing heavy development, so please bear with me!
 + Fixed #1 "Bars not disappearing after kill"
 + Added ruRU locale
 
+v0.10.3
++ Updated libs
++ Reorganized timers
++ Fixed mage timers
+
 == TODO: ==
 * Go through and make sure that all spell timers are accurate
 * Add rogue poisons
