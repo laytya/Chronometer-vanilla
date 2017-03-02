@@ -18,7 +18,7 @@ function Chronometer:ShamanSetup()
 	self:AddTimer(self.SPELL, BS["Strength of Earth Totem"], 120, 0,1,0, { gr=1, rc=true })
 	self:AddTimer(self.SPELL, BS["Tremor Totem"],            120, 0,1,0, { gr=1, rc=true })
 
-	self:AddTimer(self.SPELL, BS["Fire Nova Totem"],          5, 0,1,0, { gr=2, rc=true, d={tn=BS["Improved Fire Totems"], tb=-1}})
+	self:AddTimer(self.SPELL, BS["Fire Nova Totem"],          5, 0,1,0, { gr=2, rc=true, d={tn=L["Improved Fire Totems"], tb=-1}})
 	self:AddTimer(self.SPELL, BS["Flametongue Totem"],       120, 0,1,0, { gr=2, rc=true })
 	self:AddTimer(self.SPELL, BS["Frost Resistance Totem"],  120, 0,1,0, { gr=2, rc=true })
 	self:AddTimer(self.SPELL, BS["Magma Totem"],             20, 0,1,0, { gr=2, rc=true })
