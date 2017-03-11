@@ -1,11 +1,12 @@
 ﻿--<< ====================================================================== >>--
 -- Class Setup                                                                --
 --<< ====================================================================== >>--
-Chronometer = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0", "AceDB-2.0", "AceConsole-2.0", "AceDebug-2.0", "AceHook-2.1", "CandyBar-2.0")
+Chronometer = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0", "AceDB-2.0", "AceConsole-2.0", "AceDebug-2.0", "AceHook-2.1", "CandyBar-2.0", "FuBarPlugin-2.0")
 -- embedded libs
 local L = AceLibrary("AceLocale-2.2"):new("Chronometer")
 local BS = AceLibrary("Babble-Spell-2.2")
 local dewdrop = AceLibrary("Dewdrop-2.0")
+local waterfall 		= AceLibrary("Waterfall-1.0")
 
 
 Chronometer.SPELL = 1
@@ -13,6 +14,15 @@ Chronometer.EVENT = 2
 
 Chronometer.dataSetup = {}
 
+-- stuff for FuBar:
+Chronometer.hasIcon  = "Interface\\AddOns\\Chronometer\\icon"
+Chronometer.defaultPosition = "LEFT"
+Chronometer.defaultMinimapPosition = 250
+Chronometer.cannotDetachTooltip = false
+Chronometer.tooltipHiddenWhenEmpty = true
+Chronometer.hideWithoutStandby = true
+Chronometer.clickableTooltip = true
+Chronometer.independentProfile = true
 
 
 function Chronometer:OnInitialize()
@@ -48,11 +58,37 @@ function Chronometer:OnInitialize()
 
 	local options = {
 		type = "group",
+		icon = "Interface\\AddOns\\Chronometer\\icon",
+		--icon = "Interface\\Icons\\Spell_Nature_ElementalAbsorption",
 		args = {
-			anchor = {name = L["Anchor"], desc = L["Shows the dragable anchor."], type = "execute", func = "ToggleAnchor"},
 
+			main = {
+				name = "Main", type = "group", desc = "Main options", order = 10,
+				args = {
+					anchor = {name = L["Anchor"], desc = L["Shows the dragable anchor."], type = "execute", func = "ToggleAnchor", order = 70, } ,
+					
+					ghost = {name = L["Ghost"], desc = L["Change the amount of time that ghost bars stay up."], type = "range",  order = 30,
+						get = function () return self.db.profile.ghost end,
+						set = function (v) self.db.profile.ghost = v end,
+						min = 0, max = 30},
+					kill = {
+						name = L["Kill"], desc = L["Toggles whether bars disappear when killing things."], type = "toggle",  order = 40,
+						get = function() return self.db.profile.fadeonkill end,
+						set = function(f) self.db.profile.fadeonkill = f end,},
+					fade = {
+						name = L["Fade"], desc = L["Toggles whether bars disappear when spells fade."], type = "toggle",  order = 50,
+						get = function() return self.db.profile.fadeonfade end,
+						set = function(f) self.db.profile.fadeonfade = f end,},
+					self = {
+						name = L["Self"], desc = L["Toggles bars for spell durations on the player."], type = "toggle",  order = 60,
+						get = function() return self.db.profile.selfbars end,
+						set = function(f) self.db.profile.selfbars = f end,
+					},
+					test = {name = L["Test"], desc = L["Runs test bars."], type = "execute", func = "RunTest", order = 80,}
+				},
+			},
 			bar = {
-				name = L["Bar"], desc=L["CandyBar options"], type = "group",
+				name = L["Bar"], desc=L["CandyBar options"], type = "group", order = 20,
 				args = {
 					texture = {
 						name = L["Bar Texture"], desc = L["Changes the texture of the timer bars."], type = "text",
@@ -127,24 +163,7 @@ function Chronometer:OnInitialize()
 					},
 				},
 			},
-			ghost = {name = L["Ghost"], desc = L["Change the amount of time that ghost bars stay up."], type = "range",
-				get = function () return self.db.profile.ghost end,
-				set = function (v) self.db.profile.ghost = v end,
-				min = 0, max = 30},
-			kill = {
-				name = L["Kill"], desc = L["Toggles whether bars disappear when killing things."], type = "toggle",
-				get = function() return self.db.profile.fadeonkill end,
-				set = function(f) self.db.profile.fadeonkill = f end,},
-			fade = {
-				name = L["Fade"], desc = L["Toggles whether bars disappear when spells fade."], type = "toggle",
-				get = function() return self.db.profile.fadeonfade end,
-				set = function(f) self.db.profile.fadeonfade = f end,},
-			self = {
-				name = L["Self"], desc = L["Toggles bars for spell durations on the player."], type = "toggle",
-				get = function() return self.db.profile.selfbars end,
-				set = function(f) self.db.profile.selfbars = f end,
-			},
-			test = {name = L["Test"], desc = L["Runs test bars."], type = "execute", func = "RunTest"},
+			
 		},
 	}
 
@@ -176,9 +195,23 @@ function Chronometer:OnInitialize()
 
 	Chronometer:RegisterDB("ChronometerDB")
 	Chronometer:RegisterDefaults('profile', defaults)
-	Chronometer:RegisterChatCommand({'/chron', '/chronometer'}, options)
+	Chronometer:RegisterChatCommand({'/chron', '/chronometer'}, function()
+		waterfall:Open('Chronometer')
+	end)
+	
+	self.OnClick = function()
+	waterfall:Open('Chronometer') end
+	self.OnMenuRequest = options
+		
+	Chronometer:RegisterChatCommand({'/chroncl'}, options)
+	
+	self.OnMenuRequest.args.lockTooltip.hidden = true
+	self.OnMenuRequest.args.detachTooltip.hidden = true
+	if not FuBar then
+		self.OnMenuRequest.args.hide.guiName = "Hide minimap icon"
+		self.OnMenuRequest.args.hide.desc = "Hide minimap icon"
+	end
 
-	self.options = nil
 
 	-- create the anchor frame
 	self.anchor = self:CreateAnchor(L["Chronometer"], 0,1,0)
@@ -186,6 +219,10 @@ function Chronometer:OnInitialize()
 	self:RegisterCandyBarGroup("Chronometer")
 	self:SetCandyBarGroupPoint("Chronometer", "TOP", self.anchor, "BOTTOM", 0, 0)	
 	self:SetCandyBarGroupGrowth("Chronometer", self.db.profile.growup)
+	
+	waterfall:Register('Chronometer', 'aceOptions', options, 'title','Chronometer Options','colorR', 0.5, 'colorG', 0.8, 'colorB', 0.5) 
+	
+	self.options = nil
 end
 
 function Chronometer:OnEnable()
@@ -706,6 +743,7 @@ function Chronometer:SPELL_PERIODIC(event, info)
 		isgain = 1
 	elseif info.type == "debuff" then
 		isgain = nil
+	elseif info.isDOT then
 	else
 		return
 	end
@@ -716,10 +754,10 @@ function Chronometer:SPELL_PERIODIC(event, info)
 
 	aura = info.skill
 	self:Debug(aura)
-	if aura == "Deep Wound" then aura = "Deep Wounds"  end   --TODO: table of elysium bugs
+	if aura == "Deep Wound" then aura = "Deep Wounds"  end   
 	
 	local timer = self.timers[self.EVENT][aura]	
-	if timer and timer.k.g == isgain and (timer.x.a or (timer.v and timer.v > GetTime())) then
+	if timer and timer.k.g == isgain and not info.isDOT and (timer.x.a or (timer.v and timer.v > GetTime())) then
 		if timer.k.t then
 			if not unit then unit = UnitName("player") end
 			if timer.k.s then
@@ -732,6 +770,9 @@ function Chronometer:SPELL_PERIODIC(event, info)
 		end
 		timer.v = nil; timer.t = nil;
 		self:StartTimer(timer, aura, unit)
+	elseif timer and  info.isDOT then
+		timer.v = nil; timer.t = nil;
+		self:StartTimer(timer, aura, "none")
 	end
 end
 

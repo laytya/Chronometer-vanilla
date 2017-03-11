@@ -38,6 +38,7 @@ function Chronometer:MageSetup()
 	self:AddTimer(self.EVENT, BS["Impact"],                2, 1,0,0, { cr="GREEN", a=1 })
 	self:AddTimer(self.EVENT, BS["Winter's Chill"],       15, 1,0,0, { cr="GREEN" })
 	self:AddTimer(self.EVENT, BS["Chilled"],       		   5, 1,0,0, { cr="GREEN", a=1, d={tn=BS["Permafrost"],tb=1}})
+	self:AddTimer(self.EVENT, BS["Blizzard"],       	   1.5, 0,0,0, { cr="GREEN", a=1, d={tn=BS["Permafrost"],tb=1}})
 end
 
 table.insert(Chronometer.dataSetup, Chronometer.MageSetup)

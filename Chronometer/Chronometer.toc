@@ -3,13 +3,13 @@
 ## Title: Chronometer |cff7fff7f -Ace2-|r
 ## Notes: Chronometer - an Ace2 Timer Mod based on AceTimer for Vanilla
 ## Notes-zhCN: Chronometer - 基于AceTimer的Ace2计时条插件
-## Version: 0.10.3
+## Version: 0.11.0
 ## DefaultState:
 ## Dependencies:
 ## OptionalDeps: Ace2, Babble-2.2, PaintChipsLib, CompostLib, CandyBar, Deformat, GratuityLib, SpellCacheLib, ParserLib, DewdropLib
 ## SavedVariables: ChronometerDB
 
-## X-ReleaseDate: $Date: 2017-02-20 $
+## X-ReleaseDate: $Date: 2017-03-11 $
 ## X-Email: laytya@gmail.com
 ## X-Category: Combat
 ## X-Website: https://github.com/laytya/Chronometer-vanilla
@@ -43,6 +43,9 @@ libs\Deformat-2.0\Deformat-2.0.lua
 libs\SpellCache-1.0\SpellCache-1.0.lua
 
 libs\Dewdrop-2.0\Dewdrop-2.0.lua
+libs\Waterfall-1.0\Waterfall-1.0.lua
+libs\Tablet-2.0\Tablet-2.0.lua
+libs\FuBarPlugin-2.0\FuBarPlugin-2.0.lua
 
 Core\Chronometer.lua
 Core\Chronometer-Locale.lua

@@ -45,6 +45,12 @@ v0.10.3
 + Reorganized timers
 + Fixed mage timers
 
+v0.11.0
++ Added waterfall lib and options frame using it
++ Added Blizzard timer for mages
++ small fixes
++ Added minimap or Fubar button 
+
 == TODO: ==
 * Go through and make sure that all spell timers are accurate
 * Add rogue poisons
