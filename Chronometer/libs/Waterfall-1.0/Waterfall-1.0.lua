@@ -12,7 +12,7 @@ Dependencies: AceOO-2.0
 ]]
 
 local MAJOR_VERSION = "Waterfall-1.0"
-local MINOR_VERSION = "$Revision: 78662 $"
+local MINOR_VERSION = "$Revision: 78663 $"
 
 local CONTROL_LIMIT = 250
 local _
@@ -330,7 +330,7 @@ local function confirmPopup(message, func, ...)
 	StaticPopup_Show("WATERFALL01_CONFIRM_DIALOG")
 end
 
-local function showGameTooltip()
+local function showGameTooltip(this)
 	if this.tooltipTitle or this.tooltipText then
 		GameTooltip_SetDefaultAnchor(GameTooltip, this.frame or this)
 		if this.tooltipTitle then

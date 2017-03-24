@@ -51,6 +51,10 @@ v0.11.0
 + small fixes
 + Added minimap or Fubar button 
 
+v0.11.1
++ fix onClick remove bar functionality
++ update libs
+
 == TODO: ==
 * Go through and make sure that all spell timers are accurate
 * Add rogue poisons

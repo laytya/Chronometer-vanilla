@@ -192,15 +192,13 @@ function Chronometer:OnInitialize()
 		bgalpha = nil,
 		text = "$t",
 	}
-
 	Chronometer:RegisterDB("ChronometerDB")
 	Chronometer:RegisterDefaults('profile', defaults)
 	Chronometer:RegisterChatCommand({'/chron', '/chronometer'}, function()
 		waterfall:Open('Chronometer')
 	end)
 	
-	self.OnClick = function()
-	waterfall:Open('Chronometer') end
+	self.OnClick = function() waterfall:Open('Chronometer') end
 	self.OnMenuRequest = options
 		
 	Chronometer:RegisterChatCommand({'/chroncl'}, options)
@@ -439,7 +437,7 @@ function Chronometer:StartTimer(timer, name, target, rank, durmod)
 	self:SetCandyBarFade(id, fade, true)
 	self:SetCandyBarCompletion(id, self.StopBar, self, id)
 	self:SetCandyBarReversed(id, self.db.profile.reverse)
-	self:SetCandyBarOnClick(id, function (...) self:OnClick(unpack(arg)) end, timer.x.rc, timer.x.mc)
+	self:SetCandyBarOnClick(id, function (...) self:CandyOnClick(unpack(arg)) end, timer.x.rc, timer.x.mc)
 	self:StartCandyBar(id, true)
 end
 
@@ -594,7 +592,7 @@ function Chronometer:ReallyStopBar(id)
 	end
 end
 
-function Chronometer:OnClick(id, button, reactive, middlecast)
+function Chronometer:CandyOnClick(id, button, reactive, middlecast)
 	if button == "RightButton" then
 		self:SetCandyBarFade(id, 0.5, true)
 		self:StopCandyBar(id)
