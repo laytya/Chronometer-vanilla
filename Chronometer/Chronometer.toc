@@ -3,13 +3,13 @@
 ## Title: Chronometer |cff7fff7f -Ace2-|r
 ## Notes: Chronometer - an Ace2 Timer Mod based on AceTimer for Vanilla
 ## Notes-zhCN: Chronometer - 基于AceTimer的Ace2计时条插件
-## Version: 0.11.0
+## Version: 0.12
 ## DefaultState:
 ## Dependencies:
 ## OptionalDeps: Ace2, Babble-2.2, PaintChipsLib, CompostLib, CandyBar, Deformat, GratuityLib, SpellCacheLib, ParserLib, DewdropLib
 ## SavedVariables: ChronometerDB
 
-## X-ReleaseDate: $Date: 2017-03-11 $
+## X-ReleaseDate: $Date: 2017-03-27 $
 ## X-Email: laytya@gmail.com
 ## X-Category: Combat
 ## X-Website: https://github.com/laytya/Chronometer-vanilla

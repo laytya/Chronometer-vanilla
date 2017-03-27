@@ -47,6 +47,12 @@ L:RegisterTranslations("enUS", function() return {
 	["Bar Height"] = true,
 	["Set the bar height."] = true,
 	
+	["Icon Position"] = true,
+	["Changes icon position."] = true,
+	
+	["Bar Vertical Spacing"] = true,
+	["Set the bar vertical spacing."] = true,
+	
 	["Text Size"] = true,
 	["Set the bar text size."] = true,
 	
@@ -117,6 +123,12 @@ L:RegisterTranslations("ruRU", function() return {
 	
 	["Bar Height"] = "Высота полос",
 	["Set the bar height."] = "Настройка высоты полос.",
+	
+	["Icon Position"] = "Положение иконки эффекта",
+	["Changes icon position."] = "Меняет положение иконки эффекта.",
+	
+	["Bar Vertical Spacing"] = "Промежуток между полосами.",
+	["Set the bar vertical spacing."] = "Меняет промежуток между полосами.",
 	
 	["Text Size"] = "Размер текста",
 	["Set the bar text size."] = "Установить размер текста на полосе.",
@@ -336,6 +348,12 @@ L:RegisterTranslations("koKR", function() return {
 	["Bar Height"] = "바 높이",
 	["Set the bar height."] = "바 높이를 설정합니다.",
 	
+	["Icon Position"] = true,
+	["Changes icon position."] = true,
+	
+	["Bar Vertical Spacing"] = true,
+	["Set the bar vertical spacing."] = true,
+	
 	["Text Size"] = "글자 크기",
 	["Set the bar text size."] = "바 글자 크기를 설정합니다.",
 	
@@ -406,6 +424,12 @@ L:RegisterTranslations("zhCN", function() return {
 	
 	["Bar Height"] = "计时条高度",
 	["Set the bar height."] = "设定计时条高度。",
+	
+	["Icon Position"] = true,
+	["Changes icon position."] = true,
+	
+	["Bar Vertical Spacing"] = true,
+	["Set the bar vertical spacing."] = true,
 	
 	["Text Size"] = "文字尺寸",
 	["Set the bar text size."] = "设定计时条文字尺寸。",

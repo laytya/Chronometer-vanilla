@@ -55,6 +55,13 @@ v0.11.1
 + fix onClick remove bar functionality
 + update libs
 
+v0.12
++ Added options vertical space between bars & icon position (left/right)
++ Ported TBC CandyBar lib
++ Added some new textures for bars
++ Reworked options to look better in Waterfall
++ Added RightClick Mouselook feature
+
 == TODO: ==
 * Go through and make sure that all spell timers are accurate
 * Add rogue poisons

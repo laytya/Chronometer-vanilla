@@ -8,6 +8,7 @@ local BS = AceLibrary("Babble-Spell-2.2")
 local dewdrop = AceLibrary("Dewdrop-2.0")
 local waterfall 		= AceLibrary("Waterfall-1.0")
 
+Chronometer:RegisterDB("ChronometerDB")
 
 Chronometer.SPELL = 1
 Chronometer.EVENT = 2
@@ -18,12 +19,47 @@ Chronometer.dataSetup = {}
 Chronometer.hasIcon  = "Interface\\AddOns\\Chronometer\\icon"
 Chronometer.defaultPosition = "LEFT"
 Chronometer.defaultMinimapPosition = 250
-Chronometer.cannotDetachTooltip = false
+Chronometer.cannotDetachTooltip = true
 Chronometer.tooltipHiddenWhenEmpty = true
 Chronometer.hideWithoutStandby = true
-Chronometer.clickableTooltip = true
-Chronometer.independentProfile = true
+Chronometer.clickableTooltip = false
+Chronometer.hasNoColor = true
+--Chronometer.independentProfile = true
+--Chronometer.overrideMenu = true
 
+Chronometer.rightclick = false
+
+local defaults = {
+	barscale = nil,
+	growup = false,
+	reverse = false,
+	fadeonkill = true,
+	fadeonfade = true,
+	barposition = {},
+	bartex = "default",
+	ghost = nil,
+	selfbars = true,
+	barwidth = nil,
+	barheight = nil,
+	spacing = 0,
+	iconposition = "LEFT",
+	textsize = 10,
+	textcolor = "white",
+	bgcolor = nil,
+	barcolor = "gray",
+	bgalpha = nil,
+	text = "$t",
+	showIcon = true,
+	showText = true,
+	uncolored = true,
+}
+	
+
+Chronometer:RegisterDefaults('profile', defaults)
+
+local options
+
+local fubarOptions = { "detachTooltip", "colorText", "text", "lockTooltip", "position", "minimapAttach", "hide", "icon" }
 
 function Chronometer:OnInitialize()
 
@@ -54,12 +90,16 @@ function Chronometer:OnInitialize()
 		["glaze"] = "Interface\\Addons\\Chronometer\\Textures\\glaze",
 		["cilo"] = "Interface\\Addons\\Chronometer\\Textures\\cilo",
 		["charcoal"] = "Interface\\Addons\\Chronometer\\Textures\\Charcoal",
+		["diagonal"] = "Interface\\Addons\\Chronometer\\Textures\\Diagonal",
+		["fifths"] = "Interface\\Addons\\Chronometer\\Textures\\Fifths",
+		["smoothv2"] = "Interface\\Addons\\Chronometer\\Textures\\Smoothv2",
 	}
 
-	local options = {
+	options = {
 		type = "group",
 		icon = "Interface\\AddOns\\Chronometer\\icon",
 		--icon = "Interface\\Icons\\Spell_Nature_ElementalAbsorption",
+		--name = "Chronometer",
 		args = {
 
 			main = {
@@ -84,116 +124,144 @@ function Chronometer:OnInitialize()
 						get = function() return self.db.profile.selfbars end,
 						set = function(f) self.db.profile.selfbars = f end,
 					},
-					test = {name = L["Test"], desc = L["Runs test bars."], type = "execute", func = "RunTest", order = 80,}
+					
 				},
 			},
 			bar = {
 				name = L["Bar"], desc=L["CandyBar options"], type = "group", order = 20,
 				args = {
+					test = {name = L["Test"], desc = L["Runs test bars."], type = "execute", func = "RunTest", order = 10,},
 					texture = {
-						name = L["Bar Texture"], desc = L["Changes the texture of the timer bars."], type = "text",
+						name = L["Bar Texture"], desc = L["Changes the texture of the timer bars."], type = "text", order = 20,
 						get = function () return self.db.profile.bartex end,
 						set = function (v) self.db.profile.bartex = v end,
-						validate = { "default", "banto", "smooth", "perl", "glaze", "cilo", "charcoal" },
+						validate = { "default", "banto", "cilo", "charcoal", "diagonal", "fifths", "glaze", "perl", "smooth", "smoothv2" },
 					},
 					color = {
-						name = L["Bar Color"], desc=L["Set the default bar color."], type = "text",
+						name = L["Bar Color"], desc=L["Set the default bar color."], type = "text",order = 30,
 						get = function () return self.db.profile.barcolor end,
 						set = function (v) self.db.profile.barcolor = v end,
 						validate = colors,
 					},
 					bgcolor = {
-						name = L["Background Color"], desc=L["Set the bar background color."], type = "text",
+						name = L["Background Color"], desc=L["Set the bar background color."], type = "text",order = 40,
 						get = function () return self.db.profile.bgcolor end,
 						set = function (v) self.db.profile.bgcolor = v end,
 						validate = colors,
 					},
 					bgalpha = {
-						name = L["Background Alpha"],desc = L["Alpha value of the bar background."],type = "range",
+						name = L["Background Alpha"],desc = L["Alpha value of the bar background."],type = "range",order = 50,
 						get = function () return self.db.profile.bgalpha end,
 						set = function (v) self.db.profile.bgalpha = v end,
 						min = 0.0, max = 1.0,
 					},
-					textcolor = {
-						name = L["Text Color"], desc=L["Set the bar text color."], type = "text",
-						get = function () return self.db.profile.textcolor end,
-						set = function (v) self.db.profile.textcolor = v end,
-						validate = colors,
+					
+					height = {
+						name = L["Bar Height"], desc=L["Set the bar height."], type = "range",order = 90,
+						get = function () return self.db.profile.barheight end,
+						set = function (v) self.db.profile.barheight = v end,
+						min = 8, max = 30, step = 1,
 					},
-					textsize = {
-						name = L["Text Size"], desc = L["Set the bar text size."], type = "range",
-						get = function () return self.db.profile.textsize end,
-						set = function (v) self.db.profile.textsize = v end,
-						min = 8, max = 20,
+					width = {
+						name = L["Bar Width"], desc=L["Set the bar width."], type = "range",order = 100,
+						get = function () return self.db.profile.barwidth end,
+						set = function (v) self.db.profile.barwidth = v end,
+						min = 50, max = 300, step = 1,
 					},
 					scale = {
-						name = L["Bar Scale"], desc=L["Set the bar scale."], type = "range",
+						name = L["Bar Scale"], desc=L["Set the bar scale."], type = "range",order = 103,
 						get = function () return self.db.profile.barscale end,
 						set = function (v) self.db.profile.barscale = v end,
 						min = 0.5, max = 1.5,
 					},
-					height = {
-						name = L["Bar Height"], desc=L["Set the bar height."], type = "range",
-						get = function () return self.db.profile.barheight end,
-						set = function (v) self.db.profile.barheight = v end,
-						min = 8, max = 30,
+					spacing = {
+						name = L["Bar Vertical Spacing"], desc=L["Set the bar vertical spacing."], type = "range",order = 105,
+						get = function () return self.db.profile.spacing end,
+						set = function (v) self.db.profile.spacing = v end,
+						min = 0, max = 15, step = 1,
 					},
-					width = {
-						name = L["Bar Width"], desc=L["Set the bar width."], type = "range",
-						get = function () return self.db.profile.barwidth end,
-						set = function (v) self.db.profile.barwidth = v end,
-						min = 50, max = 300,
+					iconposition = {
+						name = L["Icon Position"], desc = L["Changes icon position."], type = "text", order = 107,
+						get = function () return self.db.profile.iconposition end,
+						set = function (v) self.db.profile.iconposition = v end,
+						validate = { "LEFT", "RIGHT"},
 					},
 					growth = {
-						name = L["Bar Growth"], desc=L["Toggles bar growing up or downwards."], type = "toggle",
+						name = L["Bar Growth"], desc=L["Toggles bar growing up or downwards."], type = "toggle",order = 110,
 						get = function () return self.db.profile.growup end,
 						set = function (v) self.db.profile.growup = v
 						self:SetCandyBarGroupGrowth("Chronometer", self.db.profile.growup) end,
 					},
 					reverse = {
-						name = L["Reverse"], desc = L["Toggles if bars are reversed (fill up instead of emptying)."], type = "toggle",
+						name = L["Reverse"], desc = L["Toggles if bars are reversed (fill up instead of emptying)."], type = "toggle",order = 120,
 						get = function() return self.db.profile.reverse end,
 						set = function(f) self.db.profile.reverse = f end,
 					},
 					text = {
-						name = L["Bar Text"], desc=L["Sets the text to be displayed on the bar."], type = "text",
+						name = L["Bar Text"], desc=L["Sets the text to be displayed on the bar."], type = "text",order = 130,
 						usage = L["Use $s for spell name and $t for the target's name."],
 						get = function () return self.db.profile.text end,
 						set = function (v) self.db.profile.text = v end,
 					},
+					textcolor = {
+						name = L["Text Color"], desc=L["Set the bar text color."], type = "text",order = 140,
+						get = function () return self.db.profile.textcolor end,
+						set = function (v) self.db.profile.textcolor = v end,
+						validate = colors,
 				},
+					textsize = {
+						name = L["Text Size"], desc = L["Set the bar text size."], type = "range",order = 150,
+						get = function () return self.db.profile.textsize end,
+						set = function (v) self.db.profile.textsize = v end,
+						min = 8, max = 20, step = 0.5,
 			},
 			
 		},
+			},
+			fubar = { 
+				type = "group", name = "Fubar plugin", desc = "Fubar plugin options.", order=-15,
+				args = {}
+			},
+		},
 	}
 
+--[[
 	options.args.config = {
 		name = L["Config"], desc=L["Show GUI Configuration Menu"], type = "execute", guiHidden = true,
 		func =  function()
 		dewdrop:Open(UIParent, 'children', function() dewdrop:FeedAceOptionsTable(options) end,'cursorX', true, 'cursorY', true) end,
 	}
+]]
+--	options.args.test = { type="group", name = "test", desc = " ", args = {}}
+--	
+	local t = AceLibrary("AceDB-2.0"):GetAceOptionsDataTable(Chronometer)
+	
+--	printTable(t,"t",3)
+	
+	for k,v in pairs(t) do
+		if options.args[k] == nil then
+			if k == "profile" then 
+				options.args["aprofile"] = v  
+			else
+				options.args[k] = v
+			end
+		end
+	end
+	
+	for k in t do t[k] = nil end
+	table.setn(t,0)
+	
+	t = AceLibrary("FuBarPlugin-2.0"):GetAceOptionsDataTable(Chronometer)
+	for k,v in pairs(t) do
+		if not options.args.fubar.args[k] then	options.args.fubar.args[k] = v	end
+	end
 
-	local defaults = {
-		barscale = nil,
-		growup = false,
-		reverse = false,
-		fadeonkill = true,
-		fadeonfade = true,
-		barposition = {},
-		bartex = "default",
-		ghost = nil,
-		selfbars = true,
-		barwidth = nil,
-		barheight = nil,
-		textsize = nil,
-		textcolor = nil,
-		bgcolor = nil,
-		barcolor = "gray",
-		bgalpha = nil,
-		text = "$t",
-	}
-	Chronometer:RegisterDB("ChronometerDB")
-	Chronometer:RegisterDefaults('profile', defaults)
+	
+	
+	
+	waterfall:Register('Chronometer', 'aceOptions', options, 'title','Chronometer Options','colorR', 0.5, 'colorG', 0.8, 'colorB', 0.5,
+	'treeLevels', 3)--, 'treeType', "SECTIONS")
+
 	Chronometer:RegisterChatCommand({'/chron', '/chronometer'}, function()
 		waterfall:Open('Chronometer')
 	end)
@@ -210,7 +278,6 @@ function Chronometer:OnInitialize()
 		self.OnMenuRequest.args.hide.desc = "Hide minimap icon"
 	end
 
-
 	-- create the anchor frame
 	self.anchor = self:CreateAnchor(L["Chronometer"], 0,1,0)
 
@@ -218,12 +285,27 @@ function Chronometer:OnInitialize()
 	self:SetCandyBarGroupPoint("Chronometer", "TOP", self.anchor, "BOTTOM", 0, 0)	
 	self:SetCandyBarGroupGrowth("Chronometer", self.db.profile.growup)
 	
-	waterfall:Register('Chronometer', 'aceOptions', options, 'title','Chronometer Options','colorR', 0.5, 'colorG', 0.8, 'colorB', 0.5) 
+	dewdrop:InjectAceOptionsTable(self, self.OnMenuRequest)
+	--AceLibrary("AceConsole-2.0"):InjectAceOptionsTable(Chronometer, Chronometer.OnMenuRequest)
+	--'treeType', "SECTIONS") 
 	
 	self.options = nil
 end
 
 function Chronometer:OnEnable()
+	
+	
+	for k,v in fubarOptions do
+		printc(v)
+		if self.OnMenuRequest.args[v] then 
+			self.OnMenuRequest.args[v].hidden = true
+		else
+			printc("  ->nil")
+		end
+	end
+--	AceLibrary("AceConsole-2.0"):InjectAceOptionsTable(Chronometer, Chronometer.OnMenuRequest.args.fubar)
+	
+	
 	self.groups = {}
 	self.timers = {}
 	self.bars = {}
@@ -348,13 +430,16 @@ function Chronometer:RunTest()
 		if self.db.profile.barscale then self:SetCandyBarScale(id, self.db.profile.barscale) end
 		if self.db.profile.barwidth then self:SetCandyBarWidth(id, self.db.profile.barwidth) end
 		if self.db.profile.barheight then self:SetCandyBarHeight(id, self.db.profile.barheight) end
+		if self.db.profile.iconposition then self:SetCandyBarIconPosition(id,self.db.profile.iconposition) end
+		if self.db.profile.spacing then self:SetCandyBarGroupVerticalSpacing("Chronometer", self.db.profile.spacing) end
 		if self.db.profile.textsize then self:SetCandyBarFontSize(id, self.db.profile.textsize) end
 		if self.db.profile.bartex then self:SetCandyBarTexture(id, self.textures[self.db.profile.bartex]) end
 		if self.db.profile.textcolor then self:SetCandyBarTextColor(id, self.db.profile.textcolor) end
 		if self.db.profile.bgcolor then self:SetCandyBarBackgroundColor(id, self.db.profile.bgcolor, self.db.profile.bgalpha) end
 		if self.db.profile.ghost then self:SetCandyBarFade(id, self.db.profile.ghost, true) end
 		self:SetCandyBarCompletion(id, self.StopBar, self, id)
-		self:SetCandyBarOnClick(id, function (...) self:OnClick(unpack(arg)) end)
+		self:SetCandyBarReversed(id, self.db.profile.reverse)
+		self:SetCandyBarOnClick(id, function (...) self:CandyOnClick(unpack(arg)) end)
 		self:StartCandyBar(id, true)
 	end
 end
@@ -430,6 +515,8 @@ function Chronometer:StartTimer(timer, name, target, rank, durmod)
 	if self.db.profile.barscale then self:SetCandyBarScale(id, self.db.profile.barscale) end
 	if self.db.profile.barwidth then self:SetCandyBarWidth(id, self.db.profile.barwidth) end
 	if self.db.profile.barheight then self:SetCandyBarHeight(id, self.db.profile.barheight) end
+	if self.db.profile.iconposition then self:SetCandyBarIconPosition(id,self.db.profile.iconposition) end
+	if self.db.profile.spacing then self:SetCandyBarGroupVerticalSpacing("Chronometer", self.db.profile.spacing) end
 	if self.db.profile.textsize then self:SetCandyBarFontSize(id, self.db.profile.textsize) end
 	if self.db.profile.bartex then self:SetCandyBarTexture(id, self.textures[self.db.profile.bartex]) end
 	if self.db.profile.textcolor then self:SetCandyBarTextColor(id, self.db.profile.textcolor) end
@@ -594,9 +681,10 @@ end
 
 function Chronometer:CandyOnClick(id, button, reactive, middlecast)
 	if button == "RightButton" then
-		self:SetCandyBarFade(id, 0.5, true)
-		self:StopCandyBar(id)
-		self:StopBar(id)
+		MouselookStart()
+		Chronometer.rightclick = true
+		self:ScheduleEvent(function() Chronometer.rightclick = false;  Chronometer:CancelScheduledEvent("ChronometerCheckMouselook") end, 0.5)
+		self:ScheduleRepeatingEvent("ChronometerCheckMouselook",Chronometer.onClickStopCandyBar, 0.06, self, id)
 	elseif button == "MiddleButton" and middlecast then
 		for i = 1, 20 do
 			if self.bars[i].id == id then
@@ -613,6 +701,14 @@ function Chronometer:CandyOnClick(id, button, reactive, middlecast)
 				end
 			end
 		end
+	end
+end
+
+function Chronometer:onClickStopCandyBar(id)
+	if Chronometer.rightclick and not IsMouselooking() then
+		self:SetCandyBarFade(id, 0.5, true)
+		self:StopCandyBar(id)
+		self:StopBar(id)
 	end
 end
 
@@ -714,7 +810,7 @@ function Chronometer:COMBAT_DEATH(event, info)
 			return
 		end
 	elseif info.victim ~= ParserLib_SELF then
-		self:ScheduleEvent(self.KillBars, 0.5, self,info.victim)
+		self:ScheduleEvent(self.KillBars, 0.5, self, info.victim)
 		return
 	end
 end
