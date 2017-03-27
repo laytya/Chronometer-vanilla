@@ -296,11 +296,11 @@ function Chronometer:OnEnable()
 	
 	
 	for k,v in fubarOptions do
-		printc(v)
+--		printc(v)
 		if self.OnMenuRequest.args[v] then 
 			self.OnMenuRequest.args[v].hidden = true
 		else
-			printc("  ->nil")
+--			printc("  ->nil")
 		end
 	end
 --	AceLibrary("AceConsole-2.0"):InjectAceOptionsTable(Chronometer, Chronometer.OnMenuRequest.args.fubar)
