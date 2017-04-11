@@ -60,8 +60,103 @@ Chronometer:RegisterDefaults('profile', defaults)
 local options
 local latins = {I=1, II=2, III=3, IV=4, V=5, VI=6} 
 
+--------------------- FOR DEBUG ----------------------------
+local join = function (list, separator)
+		-- Type check
+		if ( not list or type(list) ~= "table" ) then 
+			ChatFrame1:AddMessage("Non-table passed to join");
+			return;
+		end
+		if ( separator == nil ) then separator = ""; end
+		
+		local i;
+		local c = "";
+		local msg = "";
+		local currType;
+		for i,v in list do
+			if ( tonumber(i) ) then
+				currType = type(v);
+				if( currType == "string" or currType == "number") then
+					msg = msg .. c .. v;
+				else
+					msg = msg .. c .. "(" .. tostring(v) .. ")";
+				end
+				c = separator;
+			end
+		end
+		return msg;		
+	end
+local printc = function(...)
+	DEFAULT_CHAT_FRAME:AddMessage(join(arg, ""))
+end
+local function printTable(table,rowname,level,spacer)
+	if ( level == nil ) then level = 1; end
+	
+	if ( type(rowname) == "nil" ) then rowname = "ROOT"; 
+	elseif ( type(rowname) == "string" ) then 
+		rowname = "\""..rowname.."\"";
+	elseif ( type(rowname) ~= "number" ) then
+		rowname = "*"..type(rowname).."*";
+	end
+
+	local msg = (spacer or "");	
+	
+	if ( table == nil ) then 
+		printc(msg,"[",rowname,"] := nil "); return 
+	end
+	if ( type(table) == "table" and level > 0 ) then
+		printc (msg,rowname," = { ");
+		for k,v in table do
+			if v == nil then printc(msg,"[",rowname,"] := nil "); end
+			printTable(v,k,level-1,msg.."  ");
+		end
+		printc(msg,"}");
+	elseif (type(table) == "function" ) then 
+		printc(msg,"[",rowname,"] => {{FunctionPtr*}}");
+	elseif (type(table) == "userdata" ) then 
+		printc(msg,"[",rowname,"] => {{UserData}}");
+	elseif (type(table) == "boolean" ) then 
+		local value = "true";
+		if ( not table ) then
+			value = "false";
+		end
+		printc(msg,"[",rowname,"] => ",value);
+	else	
+		printc(msg,"[",rowname,"] => ",table);
+	end
+end
+LPrintTable = printTable
+---------------------------------------------------------------------  ]]
 
 local fubarOptions = { "detachTooltip", "colorText", "text", "lockTooltip", "position", "minimapAttach", "hide", "icon" }
+
+--Code by Grayhoof (SCT)
+local function CloneTable(t)				-- return a copy of the table t
+	local new = {};					-- create a new table
+	local i, v = next(t, nil);		-- i is an index of t, v = t[i]
+	while i do
+		if type(v)=="table" then 
+			v=CloneTable(v);
+		end 
+		new[i] = v;
+		i, v = next(t, i);			-- get next index
+	end
+	return new;
+end
+
+local function moveChild(source, dest, name)
+	--dest[name] = CloneTable( source[name])
+	source[name].hidden = true
+end
+function moveFubarOptions(source)
+	source.fubar = { type = "group", name = "Fubar plugin options", desc = "Fubar plugin options.", args = {}}
+	for k,v in fubarOptions do
+		source[v].hidden = true
+		--printc(v)
+	--	printTable(source[v],"source['"..v.."']", 3)
+		--moveChild(source,source.fubar.args,v)
+	end
+end
 
 function Chronometer:OnInitialize()
 
@@ -100,12 +195,10 @@ function Chronometer:OnInitialize()
 	options = {
 		type = "group",
 		icon = "Interface\\AddOns\\Chronometer\\icon",
-		--icon = "Interface\\Icons\\Spell_Nature_ElementalAbsorption",
-		--name = "Chronometer",
 		args = {
 
 			main = {
-				name = "Main", type = "group", desc = "Main options", order = 10,
+				name = L["General"], type = "group", desc = L["General options"], order = 10,
 				args = {
 					anchor = {name = L["Anchor"], desc = L["Shows the dragable anchor."], type = "execute", func = "ToggleAnchor", order = 70, } ,
 					
@@ -221,7 +314,7 @@ function Chronometer:OnInitialize()
 		},
 			},
 			fubar = { 
-				type = "group", name = "Fubar plugin", desc = "Fubar plugin options.", order=-15,
+				type = "group", name = L["Fubar plugin"], desc = L["Fubar plugin options."], order=-15,
 				args = {}
 			},
 		},

@@ -4,6 +4,9 @@ L:RegisterTranslations("enUS", function() return {
 	["Chronometer"] = true,
 	["Chronometer - an Ace2 Timer Mod"] = true,
 
+	["General"] =true,
+	["General options"] = true,
+		
 	["Anchor"] = true,
 	["Shows the dragable anchor."] = true,
 
@@ -71,6 +74,9 @@ L:RegisterTranslations("enUS", function() return {
 	["Bar"] = true,
 	["CandyBar options"] = true,
 	
+	["Fubar plugin"] = true,
+	["Fubar plugin options."] = true,
+	
 	["Hide"] = true,
 	
 	-- These all need to be added to Babble-Spell!!!
@@ -81,6 +87,9 @@ L:RegisterTranslations("ruRU", function() return {
 	["Chronometer"] = "Chronometer",
 	["Chronometer - an Ace2 Timer Mod"] = "Chronometer - Ace2 таймер мод",
 
+	["General"] = "Основное",
+	["General options"] = "Основные настройки",
+	
 	["Anchor"] = "Якорь",
 	["Shows the dragable anchor."] = "Показывать якорь для перетаскивания",
 
@@ -91,22 +100,22 @@ L:RegisterTranslations("ruRU", function() return {
 	["Changes the texture of the timer bars."] = "Изменяет текстура полос таймера.",
 
 	["Bar Growth"] = "Рост полос",
-	["Toggles bar growing up or downwards."] = "Переключение роста полос вверх или вниз.",
+	["Toggles bar growing up or downwards."] = "Переключение напрвления появления полос вверх или вниз.",
 
 	["Fade"] = "Затухание",
 	["Toggles whether bars disappear when spells fade."] = "Вкл/Выкл. затухание полос, когда заклинание прекратилось.",
 
-	["Kill"] = "Убийства",
+	["Kill"] = "Полосы мертвых",
 	["Toggles whether bars disappear when killing things."] = "Вкл/Выкл. затухание полос, когда цель убита.",
 	
-	["Ghost"] = "Призрак",
-	["Change the amount of time that ghost bars stay up."] = "Изменить кол-во времени во время духа.",
+	["Ghost"] = "Призрачные полосы",
+	["Change the amount of time that ghost bars stay up."] = "Изменить кол-во времени призрачных полос.",
 	
-	["Self"] = "Свои",
-	["Toggles bars for spell durations on the player."] = "Переключение длительности полос заклинаний на игроке.",
+	["Self"] = "Свои полосы",
+	["Toggles bars for spell durations on the player."] = "Вкл/Выкл. полос заклинаний на игроке.",
 	
-	["Reverse"] = "Обратно",
-	["Toggles if bars are reversed (fill up instead of emptying)."] = "Вкл./Выкл. переключение полос местами (заполнение вместо опустошения).",
+	["Reverse"] = "Направление изменения полос",
+	["Toggles if bars are reversed (fill up instead of emptying)."] = "Переключение направления изменения полос (заполнение вместо опустошения).",
 
 	["Test"] = "Тест",
 	["Runs test bars."] = "Запустить тест полос.",
@@ -139,14 +148,17 @@ L:RegisterTranslations("ruRU", function() return {
 	["Bar Color"] = "Цвет полосы",
 	["Set the default bar color."] = "Установить цвет полос по умолчанию.",
 	
-	["Background Alpha"] = "Фон альфа",
-	["Alpha value of the bar background."] = "Альфа значение для фона полос.",
+	["Background Alpha"] = "Прозрачность фона",
+	["Alpha value of the bar background."] = "Значение прозрачности для фона полос.",
 	
 	["Background Color"] = "Цвет фона",
 	["Set the bar background color."] = "Установить цвет фона.",
 	
 	["Bar"] = "Полосы",
-	["CandyBar options"] = "CandyBar поции",
+	["CandyBar options"] = "Настройки CandyBar",
+	
+	["Fubar plugin"] = "Плугин Fubar",
+	["Fubar plugin options."] = "Настройки плугин Fubar.",
 	
 	["Hide"] = "Скрыть",
 	
@@ -158,6 +170,9 @@ L:RegisterTranslations("ruRU", function() return {
 L:RegisterTranslations("deDE", function() return {
 	--["Chronometer"] = true,
 	--["Chronometer - an Ace2 Timer Mod"] = true,
+
+	--["General"] = "Основное",
+	--["General options"] = "Основные настройки",
 
 	--["Anchor"] = true,
 	--["Shows the dragable anchor."] = true,
@@ -228,12 +243,19 @@ L:RegisterTranslations("deDE", function() return {
 	--["Healing Way"] = true,
 	--["Winter's Chill"] = true,
 	--["Improved Fire Totems"] = true,
+	
+	["Fubar plugin"] = "Fubar plugin",
+	["Fubar plugin options."] = "Fubar plugin options.",
+	
 } end)
 
 L:RegisterTranslations("frFR", function() return {
 	--["Chronometer"] = true,
 	--["Chronometer - an Ace2 Timer Mod"] = true,
 
+	--["General"] = "Основное",
+	--["General options"] = "Основные настройки",
+	
 	--["Anchor"] = true,
 	--["Shows the dragable anchor."] = true,
 
@@ -295,6 +317,9 @@ L:RegisterTranslations("frFR", function() return {
 	--["Bar"] = true,
 	--["CandyBar options"] = true,
 	
+	["Fubar plugin"] = "Fubar plugin",
+	["Fubar plugin options."] = "Fubar plugin options.",
+	
 	--["Hide"] = true,
 	
 	-- These all need to be added to Babble-Spell!!!
@@ -305,6 +330,9 @@ L:RegisterTranslations("koKR", function() return {
 	--["Chronometer"] = true,
 	--["Chronometer - an Ace2 Timer Mod"] = true,
 
+	--["General"] = "Основное",
+	--["General options"] = "Основные настройки",
+	
 	["Anchor"] = "고정위치",
 	["Shows the dragable anchor."] = "이동가능한 고정위치를 표시합니다.",
 
@@ -348,11 +376,11 @@ L:RegisterTranslations("koKR", function() return {
 	["Bar Height"] = "바 높이",
 	["Set the bar height."] = "바 높이를 설정합니다.",
 	
-	["Icon Position"] = true,
-	["Changes icon position."] = true,
+--	["Icon Position"] = true,
+--	["Changes icon position."] = true,
 	
-	["Bar Vertical Spacing"] = true,
-	["Set the bar vertical spacing."] = true,
+--	["Bar Vertical Spacing"] = true,
+--	["Set the bar vertical spacing."] = true,
 	
 	["Text Size"] = "글자 크기",
 	["Set the bar text size."] = "바 글자 크기를 설정합니다.",
@@ -372,6 +400,9 @@ L:RegisterTranslations("koKR", function() return {
 	["Bar"] = "바",
 	["CandyBar options"] = "CandyBar 설정",
 	
+	["Fubar plugin"] = "Fubar plugin",
+	["Fubar plugin options."] = "Fubar plugin options.",
+	
 	["Hide"] = "숨기기",
 	
 	-- These all need to be added to Babble-Spell!!!
@@ -382,6 +413,9 @@ L:RegisterTranslations("zhCN", function() return {
 	--["Chronometer"] = true,
 	["Chronometer - an Ace2 Timer Mod"] = "Chronometer - ACE2计时条插件",
 
+	--["General"] = "Основное",
+	--["General options"] = "Основные настройки",
+	
 	["Anchor"] = "锚点",
 	["Shows the dragable anchor."] = "显示可拖动的锚点。",
 
@@ -425,11 +459,11 @@ L:RegisterTranslations("zhCN", function() return {
 	["Bar Height"] = "计时条高度",
 	["Set the bar height."] = "设定计时条高度。",
 	
-	["Icon Position"] = true,
-	["Changes icon position."] = true,
+--	["Icon Position"] = true,
+--	["Changes icon position."] = true,
 	
-	["Bar Vertical Spacing"] = true,
-	["Set the bar vertical spacing."] = true,
+--	["Bar Vertical Spacing"] = true,
+--	["Set the bar vertical spacing."] = true,
 	
 	["Text Size"] = "文字尺寸",
 	["Set the bar text size."] = "设定计时条文字尺寸。",
@@ -448,6 +482,9 @@ L:RegisterTranslations("zhCN", function() return {
 	
 	["Bar"] = "计时条",
 	["CandyBar options"] = "CandyBar 设置",
+	
+	["Fubar plugin"] = "Fubar plugin",
+	["Fubar plugin options."] = "Fubar plugin options.",
 	
 	["Hide"] = "隐藏",
 	

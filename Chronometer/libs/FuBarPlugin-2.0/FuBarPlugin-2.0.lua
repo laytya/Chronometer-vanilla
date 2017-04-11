@@ -1,6 +1,6 @@
 --[[
 Name: FuBarPlugin-2.0
-Revision: $Rev: 12439 $
+Revision: $Rev: 16321 $
 Author: Cameron Kenneth Knight (ckknight@gmail.com)
 Website: http://wiki.wowace.com/index.php/FuBarPlugin-2.0
 Documentation: http://wiki.wowace.com/index.php/FuBarPlugin-2.0
@@ -11,7 +11,7 @@ Dependencies: AceLibrary, AceOO-2.0, AceEvent-2.0, Tablet-2.0, Dewdrop-2.0
 
 local MAJOR_VERSION = "FuBarPlugin-2.0"
 local MINIMAPCONTAINER_MAJOR_VERSION = "FuBarPlugin-MinimapContainer-2.0"
-local MINOR_VERSION = "$Revision: 12439 $"
+local MINOR_VERSION = "$Revision: 16321 $"
 
 -- This ensures the code is only executed if the libary doesn't already exist, or is a newer version
 if not AceLibrary then error(MAJOR_VERSION .. " requires AceLibrary.") end
@@ -25,6 +25,155 @@ local Dewdrop = AceLibrary:HasInstance("Dewdrop-2.0") and AceLibrary("Dewdrop-2.
 
 local epsilon = 1e-5
 local _G = getfenv(0)
+
+local SHOW_ICON = "Show icon"
+local SHOW_ICON_DESC = "Show the plugins icon on the panel."
+local SHOW_TEXT = "Show text"
+local SHOW_TEXT_DESC = "Show the plugins text on the panel."
+local SHOW_COLORED_TEXT = "Show colored text"
+local SHOW_COLORED_TEXT_DESC = "Allow the plugin to color its text."
+local DETACH_TOOLTIP = "Detach tooltip"
+local DETACH_TOOLTIP_DESC = "Detach the tooltip from the panel."
+local LOCK_TOOLTIP = "Lock tooltip"
+local LOCK_TOOLTIP_DESC = "Lock the tooltips position. When the tooltip is locked, you must use Alt to access it with your mouse."
+local POSITION = "Position"
+local POSITION_DESC = "Position the plugin on the panel."
+local POSITION_LEFT = "Left"
+local POSITION_RIGHT = "Right"
+local POSITION_CENTER = "Center"
+local ATTACH_TO_MINIMAP = "Attach to minimap"
+local ATTACH_TO_MINIMAP_DESC = "Attach the plugin to the minimap instead of the panel."
+local HIDE_FUBAR_PLUGIN = "Hide plugin"
+local HIDE_FUBAR_PLUGIN_CMD = "Hidden"
+local HIDE_FUBAR_PLUGIN_DESC = "Hide the plugin from the panel or minimap, leaving the addon running."
+
+if GetLocale() == "ruRU" then
+	SHOW_ICON = "Показать иконку"
+	SHOW_ICON_DESC = "Показать иконку плагина на панели."
+	SHOW_TEXT = "Показать текст"
+	SHOW_TEXT_DESC = "Показать текст плагина на панели."
+	SHOW_COLORED_TEXT = "Показать цветной текст"
+	SHOW_COLORED_TEXT_DESC = "Всегда окрашивать плагину этот текст."
+	DETACH_TOOLTIP = "Отделить меню"
+	DETACH_TOOLTIP_DESC = "Отделить окно меню от панели."
+	LOCK_TOOLTIP = "Закрепить меню"
+	LOCK_TOOLTIP_DESC = "Закрепить окно меню. Когда меню закрепленно, вы можете использовать Alt+ЛКМ."
+	POSITION = "Положение"
+	POSITION_DESC = "Положение плагина на панели."
+	POSITION_LEFT = "Слева"
+	POSITION_RIGHT = "Справа"
+	POSITION_CENTER = "По центру"
+	ATTACH_TO_MINIMAP = "Прикрепить к мини-карте"
+	ATTACH_TO_MINIMAP_DESC = "Прикрепить плагин к мини-карте."
+	HIDE_FUBAR_PLUGIN = "Скрыть плагин"
+	HIDE_FUBAR_PLUGIN_CMD = "Hidden"
+	HIDE_FUBAR_PLUGIN_DESC = "Скрыть плагин с панели или мини-карты."
+elseif GetLocale() == "koKR" then
+	SHOW_ICON = "아이콘 표시"
+	SHOW_ICON_DESC = "패널에 플러그인 아이콘을 표시합니다."
+	SHOW_TEXT = "텍스트 표시"
+	SHOW_TEXT_DESC = "페널에 플러그인 텍스트를 표시합니다."
+	SHOW_COLORED_TEXT = "색상화된 텍스트 표시"
+	SHOW_COLORED_TEXT_DESC = "플러그인의 텍스트 색상을 허용합니다."
+	DETACH_TOOLTIP = "툴팁 분리"
+	DETACH_TOOLTIP_DESC = "패널에서 툴팁을 분리 합니다."
+	LOCK_TOOLTIP = "툴팁 고정"
+	LOCK_TOOLTIP_DESC = "툴팁 위치를 고정합니다."
+	POSITION = "위치"
+	POSITION_DESC = "패널에서 플러그인의 위치를 설정합니다."
+	POSITION_LEFT = "왼쪽"
+	POSITION_RIGHT = "오른쪽"
+	POSITION_CENTER = "가운데"
+	ATTACH_TO_MINIMAP = "미니맵에 표시"
+	ATTACH_TO_MINIMAP_DESC = "플러그인을 패널 대신 미니맵에 표시합니다."
+	HIDE_FUBAR_PLUGIN = "FuBar 플러그인 숨기기"
+	HIDE_FUBAR_PLUGIN_CMD = "숨겨짐"
+	HIDE_FUBAR_PLUGIN_DESC = "패널에서 플러그인을 숨깁니다."
+elseif GetLocale() == "deDE" then
+	SHOW_ICON = "Zeige Icon"
+	SHOW_ICON_DESC = "Zeige das Plugin-Icon auf der Leiste."
+	SHOW_TEXT = "Zeige Text"
+	SHOW_TEXT_DESC = "Zeige den Plugin-Text auf der Leiste."
+	SHOW_COLORED_TEXT = "Zeige gef\195\164rbten Text"
+	SHOW_COLORED_TEXT_DESC = "Dem Plugin erlauben sein Text zu f\195\164rben."
+	DETACH_TOOLTIP = "Tooltip l\195\182sen"
+	DETACH_TOOLTIP_DESC = "Tooltip von der Leiste l\195\182sen."
+	LOCK_TOOLTIP = "Tooltip sperren"
+	LOCK_TOOLTIP_DESC = "Tooltip an der Position sperren."
+	POSITION = "Position"
+	POSITION_DESC = "Positioniert das Plugin auf der Leiste."
+	POSITION_LEFT = "Links"
+	POSITION_RIGHT = "Rechts"
+	POSITION_CENTER = "Mitte"
+	ATTACH_TO_MINIMAP = "An der Minimap anbringen"
+	ATTACH_TO_MINIMAP_DESC = "Bringt das Plugin an der Minimap anstelle der Leiste an."
+	HIDE_FUBAR_PLUGIN = "Versteckt das FuBar Plugin"
+	HIDE_FUBAR_PLUGIN_CMD = "Verstecken"
+	HIDE_FUBAR_PLUGIN_DESC = "Versteckt das Plugin von der Leiste."
+elseif GetLocale() == "frFR" then
+	SHOW_ICON = "Afficher l'ic\195\180ne"
+	SHOW_ICON_DESC = "Afficher l'ic\195\180ne du plugin sur le panneau."
+	SHOW_TEXT = "Afficher le texte"
+	SHOW_TEXT_DESC = "Afficher le texte du plugin sur le panneau."
+	SHOW_COLORED_TEXT = "Afficher la couleur du texte"
+	SHOW_COLORED_TEXT_DESC = "Permet au plugin de colorer le texte."
+	DETACH_TOOLTIP = "D\195\169tacher le tooltip"
+	DETACH_TOOLTIP_DESC = "Permet de d\195\169tacher le tooltip du panneau."
+	LOCK_TOOLTIP = "Bloquer le tooltip"
+	LOCK_TOOLTIP_DESC = "Permet de bloquer le tooltip \195\160 sa position actuelle."
+	POSITION = "Position"
+	POSITION_DESC = "Permet de changer la position du plugin dans le panneau."
+	POSITION_LEFT = "Gauche"
+	POSITION_RIGHT = "Droite"
+	POSITION_CENTER = "Centre"
+	ATTACH_TO_MINIMAP = "Attacher \195\160 la minicarte"
+	ATTACH_TO_MINIMAP_DESC = "Atteche l'ic\195\180ne du plugin \195\160 la minicarte."
+	HIDE_FUBAR_PLUGIN = "Masquer le plugin"
+	HIDE_FUBAR_PLUGIN_CMD = "Masqu\195\169"
+	HIDE_FUBAR_PLUGIN_DESC = "Permet de masquer compl\195\168tement le plugin du panneau."
+elseif GetLocale() == "zhCN" then
+	SHOW_ICON = "显示图标"
+	SHOW_ICON_DESC = "在面板上显示插件图标."
+	SHOW_TEXT = "显示文字"
+	SHOW_TEXT_DESC = "在面板上显示文字标题."
+	SHOW_COLORED_TEXT = "显示彩色文字"
+	SHOW_COLORED_TEXT_DESC = "允许插件显示彩色文字."
+	DETACH_TOOLTIP = "独立提示信息"
+	DETACH_TOOLTIP_DESC = "从面板上独立提示信息."
+	LOCK_TOOLTIP = "锁定提示信息"
+	LOCK_TOOLTIP_DESC = "锁定提示信息位置."
+	POSITION = "位置"
+	POSITION_DESC = "插件在面板上的位置."
+	POSITION_LEFT = "居左"
+	POSITION_RIGHT = "居右"
+	POSITION_CENTER = "居中"
+	ATTACH_TO_MINIMAP = "依附在小地图"
+	ATTACH_TO_MINIMAP_DESC = "插件图标依附在小地图而不显示在面板上."
+	HIDE_FUBAR_PLUGIN = "隐藏FuBar插件"
+	HIDE_FUBAR_PLUGIN_CMD = "Hidden"
+	HIDE_FUBAR_PLUGIN_DESC = "在面板上隐藏该插件."
+elseif GetLocale() == "zhTW" then
+	SHOW_ICON = "顯示圖示"
+	SHOW_ICON_DESC = "在面板上顯示插件圖示。"
+	SHOW_TEXT = "顯示文字"
+	SHOW_TEXT_DESC = "在面板上顯示文字標題。"
+	SHOW_COLORED_TEXT = "顯示彩色文字"
+	SHOW_COLORED_TEXT_DESC = "允許插件顯示彩色文字。"
+	DETACH_TOOLTIP = "獨立提示訊息"
+	DETACH_TOOLTIP_DESC = "從面板上獨立提示訊息。"
+	LOCK_TOOLTIP = "鎖定提示訊息"
+	LOCK_TOOLTIP_DESC = "鎖定提示訊息位置。"
+	POSITION = "位置"
+	POSITION_DESC = "插件在面板上的位置。"
+	POSITION_LEFT = "靠左"
+	POSITION_RIGHT = "靠右"
+	POSITION_CENTER = "置中"
+	ATTACH_TO_MINIMAP = "依附在小地圖"
+	ATTACH_TO_MINIMAP_DESC = "插件圖標依附在小地圖而不顯示在面板上。"
+	HIDE_FUBAR_PLUGIN = "隱藏FuBar插件"
+	HIDE_FUBAR_PLUGIN_CMD = "Hidden"
+	HIDE_FUBAR_PLUGIN_DESC = "在面板上隱藏該插件."
+end
 
 local FuBarPlugin = AceLibrary("AceOO-2.0").Mixin {
 													"GetTitle",
@@ -392,7 +541,7 @@ function FuBarPlugin:SetText(text)
 		end
 	end
 	if not self:IsTextColored() then
-		text = string.gsub(text, "|c%x%x%x%x%x%x%x%x(.-)|r", "%1")
+		text = string.gsub(string.gsub(text, "|c%x%x%x%x%x%x%x%x", ""), "|r", "")
 	end
 	self.textFrame:SetText(text)
 	self:CheckWidth()
@@ -412,10 +561,10 @@ function FuBarPlugin:IsIconShown()
 		return true
 	elseif not self.db then
 		return true
-	elseif self.db.profile.showIcon == nil then
+	elseif self.db and self.db.profile.showIcon == nil then
 		return true
 	else
-		return (self.db.profile.showIcon == 1 or self.db.profile.showIcon == true) and true or false
+		return (self.db and (self.db.profile.showIcon == 1 or self.db.profile.showIcon == true)) and true or false
 	end
 end
 
@@ -466,10 +615,10 @@ function FuBarPlugin:IsTextShown()
 		return true
 	elseif not self.db then
 		return true
-	elseif self.db.profile.showText == nil then
+	elseif self.db and self.db.profile.showText == nil then
 		return true
 	else
-		return (self.db.profile.showText == 1 or self.db.profile.showText == true) and true or false
+		return (self.db and (self.db.profile.showText == 1 or self.db.profile.showText == true)) and true or false
 	end
 end
 
@@ -522,6 +671,7 @@ function FuBarPlugin:ToggleTooltipDetached()
 	else
 		Tablet:Detach(self.frame)
 	end
+	if Dewdrop then Dewdrop:Close() end
 end
 
 function FuBarPlugin:DetachTooltip()
@@ -598,7 +748,7 @@ function FuBarPlugin:OnInstanceInit(target)
 		self:error(MAJOR_VERSION .. " requires Dewdrop-2.0.")
 	end
 	self.registry[target] = true
-	
+
 	local _,_,folderName = string.find(debugstack(6, 1, 0), "\\AddOns\\(.*)\\")
 	target.folderName = folderName
 	self.folderNames[target] = folderName
@@ -723,7 +873,7 @@ function FuBarPlugin:OpenMenu(frame)
 						'isTitle', true
 					)
 				end
-				
+
 				if level == 1 then
 					if self.OnMenuRequest then
 						self:OnMenuRequest(level, value, false, valueN_1, valueN_2, valueN_3, valueN_4)
@@ -795,7 +945,7 @@ function FuBarPlugin.OnEmbedInitialize(FuBarPlugin, self)
 	if not self.frame then
 		local name = "FuBarPlugin" .. self:GetTitle() .. "Frame"
 		local frame = _G[name]
-		if not frame or not _G[self.frame:GetName() .. "Text"] or not _G[self.frame:GetName() .. "Icon"] then
+		if not frame or not _G[name .. "Text"] or not _G[name .. "Icon"] then
 			frame = self:CreateBasicPluginFrame(name)
 
 			local icon = frame:CreateTexture(name .. "Icon", "ARTWORK")
@@ -810,8 +960,8 @@ function FuBarPlugin.OnEmbedInitialize(FuBarPlugin, self)
 			text:SetFontObject(GameFontNormal)
 		end
 		self.frame = frame
-		self.textFrame = _G[self.frame:GetName() .. "Text"]
-		self.iconFrame = _G[self.frame:GetName() .. "Icon"]
+		self.textFrame = _G[name .. "Text"]
+		self.iconFrame = _G[name .. "Icon"]
 	else
 		self.userDefinedFrame = true
 	end
@@ -848,7 +998,7 @@ function FuBarPlugin.OnEmbedEnable(FuBarPlugin, self)
 	end
 	self:CheckWidth(true)
 
-	if not self.hideWithoutStandby or not self.db.profile.hidden then
+	if not self.hideWithoutStandby or (self.db and not self.db.profile.hidden) then
 		if FuBarPlugin.enabledPlugins[self] then
 			CheckShow(self, self.panelIdTmp)
 		else
@@ -860,7 +1010,7 @@ function FuBarPlugin.OnEmbedEnable(FuBarPlugin, self)
 	if not self.overrideTooltip and not self.cannotDetachTooltip and self.db and self.db.profile.detachedTooltip and self.db.profile.detachedTooltip.detached then
 		FuBarPlugin:ScheduleEvent(self.DetachTooltip, 0, self)
 	end
-	
+
 	if self:IsLoadOnDemand() and CheckFuBar() then
 		if not FuBar.db.profile.loadOnDemand then
 			FuBar.db.profile.loadOnDemand = {}
@@ -870,7 +1020,7 @@ function FuBarPlugin.OnEmbedEnable(FuBarPlugin, self)
 		end
 		FuBar.db.profile.loadOnDemand[self.folderName].disabled = nil
 	end
-	
+
 	if CheckFuBar() and AceLibrary:HasInstance("AceConsole-2.0") then
 		if not recheckPlugins then
 			local AceConsole = AceLibrary("AceConsole-2.0")
@@ -889,7 +1039,7 @@ end
 
 function FuBarPlugin.OnEmbedDisable(FuBarPlugin, self)
 	self:Hide(false)
-	
+
 	if self:IsLoadOnDemand() and CheckFuBar() then
 		if not FuBar.db.profile.loadOnDemand then
 			FuBar.db.profile.loadOnDemand = {}
@@ -919,8 +1069,8 @@ function FuBarPlugin.GetAceOptionsDataTable(FuBarPlugin, self)
 	return {
 		icon = {
 			type = "toggle",
-			name = "Show icon",
-			desc = "Show icon",
+			name = SHOW_ICON,
+			desc = SHOW_ICON_DESC,
 			set = "ToggleIconShown",
 			get = "IsIconShown",
 			hidden = function()
@@ -931,8 +1081,8 @@ function FuBarPlugin.GetAceOptionsDataTable(FuBarPlugin, self)
 		},
 		text = {
 			type = "toggle",
-			name = "Show text",
-			desc = "Show text",
+			name = SHOW_TEXT,
+			desc = SHOW_TEXT_DESC,
 			set = "ToggleTextShown",
 			get = "IsTextShown",
 			hidden = function()
@@ -943,8 +1093,8 @@ function FuBarPlugin.GetAceOptionsDataTable(FuBarPlugin, self)
 		},
 		colorText = {
 			type = "toggle",
-			name = "Show colored text",
-			desc = "Show colored text",
+			name = SHOW_COLORED_TEXT,
+			desc = SHOW_COLORED_TEXT_DESC,
 			set = "ToggleTextColored",
 			get = "IsTextColored",
 			hidden = function()
@@ -955,8 +1105,8 @@ function FuBarPlugin.GetAceOptionsDataTable(FuBarPlugin, self)
 		},
 		detachTooltip = {
 			type = "toggle",
-			name = "Detach tooltip",
-			desc = "Detach tooltip",
+			name = DETACH_TOOLTIP,
+			desc = DETACH_TOOLTIP_DESC,
 			get = "IsTooltipDetached",
 			set = "ToggleTooltipDetached",
 			hidden = function()
@@ -967,8 +1117,8 @@ function FuBarPlugin.GetAceOptionsDataTable(FuBarPlugin, self)
 		},
 		lockTooltip = {
 			type = "toggle",
-			name = "Lock tooltip",
-			desc = "Lock tooltip",
+			name = LOCK_TOOLTIP,
+			desc = LOCK_TOOLTIP_DESC,
 			get = function()
 				return Tablet:IsLocked(self.frame)
 			end,
@@ -986,12 +1136,12 @@ function FuBarPlugin.GetAceOptionsDataTable(FuBarPlugin, self)
 		},
 		position = {
 			type = "text",
-			name = "Position",
-			desc = "Position",
+			name = POSITION,
+			desc = POSITION_DESC,
 			validate = {
-				LEFT = "Left",
-				CENTER = "Center",
-				RIGHT = "Right"
+				LEFT = POSITION_LEFT,
+				CENTER = POSITION_CENTER,
+				RIGHT = POSITION_RIGHT
 			},
 			get = function()
 				return self.panel and self.panel:GetPluginSide(self)
@@ -1009,8 +1159,8 @@ function FuBarPlugin.GetAceOptionsDataTable(FuBarPlugin, self)
 		},
 		minimapAttach = {
 			type = "toggle",
-			name = "Attach to minimap",
-			desc = "Attach to minimap",
+			name = ATTACH_TO_MINIMAP,
+			desc = ATTACH_TO_MINIMAP_DESC,
 			get = "IsMinimapAttached",
 			set = "ToggleMinimapAttached",
 			hidden = function()
@@ -1021,9 +1171,9 @@ function FuBarPlugin.GetAceOptionsDataTable(FuBarPlugin, self)
 		},
 		hide = {
 			type = "toggle",
-			cmdName = "Hidden",
-			guiName = "Hide FuBar plugin",
-			desc = "Hide FuBar plugin",
+			cmdName = HIDE_FUBAR_PLUGIN_CMD,
+			guiName = HIDE_FUBAR_PLUGIN,
+			desc = HIDE_FUBAR_PLUGIN_DESC,
 			get = function()
 				return not self.frame:IsShown() and (not self.minimapFrame or not self.minimapFrame:IsShown())
 			end,
@@ -1051,7 +1201,7 @@ local function activate(self, oldLib, oldDeactivate)
 		self.folderNames = oldLib.folderNames
 		self.enabledPlugins = oldLib.enabledPlugins
 	end
-	
+
 	if not self.registry then
 		self.registry = {}
 	end

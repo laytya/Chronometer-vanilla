@@ -1,13 +1,16 @@
 ﻿--<< ====================================================================== >>--
 -- Setup Timers                                                               --
 --<< ====================================================================== >>--
+
+-- rc => ReCast, ea => event ahead, 
+
 local BS = AceLibrary("Babble-Spell-2.2")
 local L = AceLibrary("AceLocale-2.2"):new("Chronometer")
 
 function Chronometer:WarriorSetup()
 	local _, eclass = UnitClass("player")
 	if eclass ~= "WARRIOR" then return end
-
+	--            kind,       name,                duration, targeted, isgain, selforselect, extra
 	self:AddTimer(self.SPELL, BS["Battle Shout"],       120, 0,1,0, { rc=true, d={tn=BS["Booming Voice"], tp=true, tb=10} })
 	self:AddTimer(self.SPELL, BS["Berserker Rage"],      10, 0,1,1)
 	self:AddTimer(self.SPELL, BS["Bloodrage"],           10, 0,1,1)
