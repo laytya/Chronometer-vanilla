@@ -1,11 +1,13 @@
 ﻿--[[
 Name: Waterfall-1.0
-Revision: $Revision: 78661 $
+Revision: $Revision: 78663 $
 Author(s): Nargiddley (nargiddley@gmail.com)
+Backport: laytya (laytya at gmail.com)
 Inspired By: Dewdrop by ckknight
 Website: http://www.wowace.com/wiki/Waterfall-1.0
 Documentation: http://www.wowace.com/wiki/Waterfall-1.0
 SVN: http://svn.wowace.com/wowace/trunk/Waterfall-1.0
+Vanilla GIT: https://github.com/laytya/LibWaterfall/
 Description: Gui Configuration Library
 License: LGPL 2.1
 Dependencies: AceOO-2.0

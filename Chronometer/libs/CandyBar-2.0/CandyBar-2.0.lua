@@ -1,16 +1,16 @@
 --[[
 Name: CandyBar-2.0
-Revision: $Rev: 154 $
+Revision: 16003
 Author: Ammo (wouter@muze.nl)
-Website: http://www.wowace.com/
-Documentation: http://www.wowace.com/
-SVN: svn://svn.wowace.com/wowace/trunk/CandyBar/CandyBar-2.0
+Backport to vanilla: laytya (@gmail.com)
+Website: https://github.com/laytya/LibCandyBar/
+Documentation: http://web.archive.org/web/20070314234510/http://wowace.com/wiki/CandyBar-2.0
 Description: A timer bars library.
 Dependencies: AceLibrary, AceOO-2.0, PaintChips-2.0
 ]]
 local match = string.match
-local getn,setn = table.getn, table.setn
-local vmajor, vminor = "CandyBar-2.0", "$Revision: 16000 $" --90000 + tonumber(match(("$Revision: 154 $"),"(%d+)"))
+local getn,setn,tinsert = table.getn, table.setn,table.insert
+local vmajor, vminor = "CandyBar-2.0", "$Revision: 16003 $" 
 
 if not AceLibrary then error(vmajor .. " requires AceLibrary.") end
 if not AceLibrary:IsNewVersion(vmajor, vminor) then return end
@@ -18,7 +18,9 @@ if not AceLibrary:IsNewVersion(vmajor, vminor) then return end
 if not AceLibrary:HasInstance("AceOO-2.0") then error(vmajor .. " requires AceOO-2.0") end
 --if not AceLibrary:HasInstance("PaintChips-2.0") then error(vmajor .. " requires PaintChips-2.0") end
 
-local paint = nil
+local paint,compost = nil,nil
+
+if AceLibrary:HasInstance("Compost-2.0") then compost = AceLibrary:GetInstance("Compost-2.0") end
 
 local AceOO = AceLibrary:GetInstance("AceOO-2.0")
 local Mixin = AceOO.Mixin
@@ -117,7 +119,10 @@ local function setArgs(t, str, ...)
 end
 
 local new, del
-do
+if  compost then
+	new =  function() return compost:Acquire() end 
+	del =  function(t) compost:Reclaim(t) end
+else
 	local list = setmetatable({}, {__mode = "k"})
 	function new()
 		local t = next(list)
@@ -408,7 +413,7 @@ end
 -- Args: name - the candybar name
 --	   c1 - c10 color order of the gradient
 -- returns true when succesful
-local cachedgradient = {}
+local cachedgradient = new() 
 function CandyBar:SetGradient(name, c1, c2, ...)
 	CandyBar:argCheck(name, 2, "string")
 	CandyBar:argCheck(c1, 3, "string", "number", "nil")
@@ -440,16 +445,13 @@ function CandyBar:SetGradient(name, c1, c2, ...)
 		_, gtable[1][1], gtable[1][2], gtable[1][3] =  paint:GetRGBPercent(c1)
 		_, gtable[2][1], gtable[2][2], gtable[2][3] =  paint:GetRGBPercent(c2)
 		gmax  = 2
-		
---		Sea.io.printTable(gtable,"gtable->")
-		for i = 1, getn(arg) do --select('#', ...) do
-			local c = arg[i] --select(i, ...)
---			Sea.io.print("arg[",i,"]=",c)
+		for i = 1, getn(arg) do 
+			local c = arg[i] 
 			if not c or not paint:GetRGBPercent(c) then
 				break
 			end
 			gmax = gmax + 1
-			gtable[gmax] = {}
+			gtable[gmax] = new() 
 			local _
 			_, gtable[gmax][1], gtable[gmax][2], gtable[gmax][3] = paint:GetRGBPercent(c)
 			gradientid = gradientid .. "_" .. c
@@ -498,16 +500,16 @@ function CandyBar:SetGradient(name, c1, c2, ...)
 	handler.gradient = true
 	handler.gradientid = gradientid
 	if not cachedgradient[gradientid] then
-		cachedgradient[gradientid] = {}
+		cachedgradient[gradientid] = new() 
 	end
---	Sea.io.printTable2(handler.gradienttable,"handler.gradienttable",3)
 	handler.frame.statusbar:SetStatusBarColor(unpack(gtable[1], 1, 4))
 	return true
 end
 
 local function setColor(color, alpha, b, a)
 	CandyBar:argCheck(color, 3, "string", "number")
-	local ctable = nil
+	local ctable = new()
+	local _, rr, gg, bb, aa
 	if type(color) == "string" then
 		if not paint then
 			CandyBar:error("You need the PaintChips-2.0 library if you don't pass in RGB pairs as colors.")
@@ -516,26 +518,19 @@ local function setColor(color, alpha, b, a)
 			return
 		end
 		CandyBar:argCheck(alpha, 4, "number", "nil")
-		ctable = new()
-		local _
-		_, ctable[1], ctable[2], ctable[3] =  paint:GetRGBPercent(color)
-		if alpha then
-			ctable[4] = alpha
-		else
-			ctable[4] = 1
-		end
+		_, rr, gg, bb = paint:GetRGBPercent(color)
+		aa = alpha and alpha or 1
 	else
 		CandyBar:argCheck(alpha, 4, "number")
 		CandyBar:argCheck(b, 5, "number")
 		CandyBar:argCheck(a, 6, "number", "nil")
-		ctable = new()
-		ctable[1], ctable[2], ctable[3] = color, alpha, b
-		if a then
-			ctable[4] = a
-		else
-			ctable[4] = 1
-		end
+		rr, gg, bb = color, alpha, b
+		aa = a and a or 1 
 	end
+	tinsert(ctable,rr)
+	tinsert(ctable,gg)
+	tinsert(ctable,bb)
+	tinsert(ctable,aa)
 	return ctable
 end
 
@@ -558,8 +553,6 @@ function CandyBar:SetColor(name, color, alpha, b, a)
 	end
 	handler.color = t
 	handler.gradient = nil
-	
-	--Sea.io.printTable(t,"SetColor t=")
 	
 	handler.frame.statusbar:SetStatusBarColor(unpack(t, 1, 4))
 	return true
@@ -584,9 +577,6 @@ function CandyBar:SetBackgroundColor(name, color, alpha, b, a)
 		handler.bgcolor = del(handler.bgcolor)
 	end
 	handler.bgcolor = t
-	
-	
-	
 	handler.frame.statusbarbg:SetStatusBarColor(unpack(t, 1, 4))
 
 	return true
@@ -891,8 +881,7 @@ function CandyBar:SetCompletion(name, func, ...)
 	return true
 end
 
-local function onClick(...)
-	
+local function onClick()
 	CandyBar:OnClick()
 end
 
@@ -1091,7 +1080,7 @@ function CandyBar:RegisterWithGroup(name, group)
 
 	CandyBar:UnregisterWithGroup(name)
 
-	table.insert(gtable.bars, name)
+	tinsert(gtable.bars, name)
 	-- CandyBar.groups[group].bars[name] = name
 	handler.group = group
 	CandyBar:UpdateGroup(group)
@@ -1369,8 +1358,6 @@ function CandyBar:GetNextBarPointInGroup(name)
 	return xoffset, yoffset + (m * bar)
 end
 
-CBUgradient = nil
-
 -- Internal Method
 -- Update a bar on screen
 function CandyBar:Update(name)
@@ -1415,7 +1402,8 @@ function CandyBar:Update(name)
 
 	if handler.gradient then
 		local p = floor( (handler.elapsed / handler.time) * 100 ) / 100
-		if not cachedgradient[handler.gradientid][p] then
+		local currentGradient = cachedgradient[handler.gradientid][p]
+		if currentGradient==nil then
 			-- find the appropriate start/end
 			local gstart, gend, gp
 			for i = 1, getn(handler.gradienttable) - 1 do
@@ -1429,19 +1417,16 @@ function CandyBar:Update(name)
 			end
 			if gstart and gend then
 				-- calculate new gradient
-				cachedgradient[handler.gradientid][p] = {} --new()
+				currentGradient = new()
 				for i = 1, 4 do
 					-- these may be the same.. but I'm lazy to make sure.
-					cachedgradient[handler.gradientid][p][i] = gstart[i]*(1-gp) + gend[i]*(gp)
+					tinsert(currentGradient, gstart[i]*(1-gp) + gend[i]*(gp))
 				end
+				cachedgradient[handler.gradientid][p] = currentGradient
 			end
 		end
-		if cachedgradient[handler.gradientid][p] then
-		
-		CBUgradient={unpack(cachedgradient[handler.gradientid][p], 1, 4)}
-		CBUgradient["p"] = p
-		
-			handler.frame.statusbar:SetStatusBarColor(unpack(cachedgradient[handler.gradientid][p], 1, 4))
+		if currentGradient~=nil then
+			handler.frame.statusbar:SetStatusBarColor(unpack(currentGradient))
 		end
 	end
 end
@@ -1653,14 +1638,13 @@ function CandyBar:ReleaseBarFrame(name)
 		return
 	end
 	handler.frame:Hide()
-	table.insert(CandyBar.framepool, handler.frame)
+	tinsert(CandyBar.framepool, handler.frame)
 	return true
 end
 
 -- Internal Method
 -- Executes the OnClick function of a bar
 function CandyBar:OnClick()
-	--Sea.io.printTable({arg1,arg2})
 	if not this.owner then
 		return
 	end

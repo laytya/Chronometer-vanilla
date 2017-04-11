@@ -58,6 +58,8 @@ local defaults = {
 Chronometer:RegisterDefaults('profile', defaults)
 
 local options
+local latins = {I=1, II=2, III=3, IV=4, V=5, VI=6} 
+
 
 local fubarOptions = { "detachTooltip", "colorText", "text", "lockTooltip", "position", "minimapAttach", "hide", "icon" }
 
@@ -831,7 +833,7 @@ end
 
 -- Buff/Debuff handling
 function Chronometer:SPELL_PERIODIC(event, info)
-	local aura, unit, isgain
+	local _, aura, rank, unit, isgain
 
 	if info.type == "buff" then
 		isgain = 1
@@ -845,9 +847,14 @@ function Chronometer:SPELL_PERIODIC(event, info)
 	if info.victim ~= ParserLib_SELF then
 		unit = info.victim
 	end
-
 	aura = info.skill
-	self:Debug(aura)
+	_, _, rank = string.find(aura,"%s([IV]+)")
+	if rank then
+		rank = latins[rank]
+		aura = string.gsub(aura,"%s([IV]+)","")
+	end
+	Sea.io.print(aura, " | ", rank)
+--	self:Debug(aura)
 	if aura == "Deep Wound" then aura = "Deep Wounds"  end   
 	
 	local timer = self.timers[self.EVENT][aura]	
@@ -863,8 +870,8 @@ function Chronometer:SPELL_PERIODIC(event, info)
 			if not timer.k.s or not unit then unit = "none" else return end
 		end
 		timer.v = nil; timer.t = nil;
-		self:StartTimer(timer, aura, unit)
-	elseif timer and  info.isDOT then
+		self:StartTimer(timer, aura, unit, rank)
+	elseif timer and  info.isDOT and not timer.x.a then
 		timer.v = nil; timer.t = nil;
 		self:StartTimer(timer, aura, "none")
 	end

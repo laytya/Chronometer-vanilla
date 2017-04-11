@@ -62,6 +62,10 @@ v0.12
 + Reworked options to look better in Waterfall
 + Added RightClick Mouselook feature
 
+v0.12.1
++ Added Rogue poisons support
++ Libs update
+
 == TODO: ==
 * Go through and make sure that all spell timers are accurate
 * Add rogue poisons
