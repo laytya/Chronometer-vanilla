@@ -946,7 +946,7 @@ function Chronometer:SPELL_PERIODIC(event, info)
 		rank = latins[rank]
 		aura = string.gsub(aura,"%s([IV]+)","")
 	end
-	Sea.io.print(aura, " | ", rank)
+--	Sea.io.print(aura, " | ", rank)
 --	self:Debug(aura)
 	if aura == "Deep Wound" then aura = "Deep Wounds"  end   
 	
