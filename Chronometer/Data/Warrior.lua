@@ -51,6 +51,7 @@ function Chronometer:WarriorSetup()
 	self:AddTimer(self.EVENT, BS["Mace Stun Effect"],     3, 1,0,0, { cr="GREEN", a=1, xn=BS["Mace Specialization"] })
 	self:AddTimer(self.EVENT, BS["Revenge Stun"],         3, 1,0,0, { cr="GREEN", xn=BS["Revenge"] })
 	self:AddTimer(self.EVENT, BS["Shield Bash - Silenced"], 3, 1,0,0, { cr="GREEN", xn=BS["Shield Bash"] })
+	self:AddTimer(self.EVENT, BS["Holy Strength"],       15, 0,1,1, { a=1, cr="YELLOW"})
 
 	--self:AddTimer(A.SKILL, C.EXECUTE,              5, 0,1,1, { cr="YELLOW", rc=true }) -- Only usable on enemies that have 20% or less health.
 	--self:AddTimer(A.SKILL, C.OVERPOWER,            5, 0,1,1, { cr="YELLOW", rc=true }) -- Only useable after the target dodges.

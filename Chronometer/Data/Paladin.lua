@@ -45,6 +45,7 @@ function Chronometer:PaladinSetup()
 	self:AddTimer(self.EVENT, BS["Redoubt"],                   10, 0,1,1, { cr="GREEN", a=1 })
 	self:AddTimer(self.EVENT, BS["Vengeance"],                  8, 0,1,1, { cr="GREEN", a=1 })
 	self:AddTimer(self.EVENT, BS["Vindication"],                8, 1,0,0, { cr="RED",  a=1 })
+	self:AddTimer(self.EVENT, BS["Holy Strength"],             15, 0,1,1, { cr="YELLOW", a=1 })
 
 	-- self:AddTimer(A.SKILL, C.HAMMER_OF_WRATH,            5, 0,1,1, { cr="YELLOW" })
 end

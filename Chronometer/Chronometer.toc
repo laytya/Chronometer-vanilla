@@ -3,7 +3,8 @@
 ## Title: Chronometer |cff7fff7f -Ace2-|r
 ## Notes: Chronometer - an Ace2 Timer Mod based on AceTimer for Vanilla
 ## Notes-zhCN: Chronometer - 基于AceTimer的Ace2计时条插件
-## Version: 0.12.1
+## Version: 0.12.2
+## X-Credits: Roadblock
 ## DefaultState:
 ## Dependencies:
 ## OptionalDeps: Ace2, Babble-2.2, PaintChipsLib, CompostLib, CandyBar, Deformat, GratuityLib, SpellCacheLib, ParserLib, DewdropLib
@@ -31,9 +32,6 @@ libs\Babble-Spell-2.2\Babble-Spell-2.2.lua
 libs\Compost-2.0\Compost-2.0.lua
 
 libs\ParserLib\ParserLib.lua
-libs\ParserLib\FixGlobalString.lua
-libs\ParserLib\optimizer-enUS.lua 
-libs\ParserLib\optimizer-koKR.lua 
 
 libs\PaintChips-2.0\PaintChips-2.0.lua
 libs\CandyBar-2.0\CandyBar-2.0.lua

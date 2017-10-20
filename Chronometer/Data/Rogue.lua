@@ -33,6 +33,7 @@ function Chronometer:RogueSetup()
 	self:AddTimer(self.EVENT, BS["Wound Poison"],       15, 1,0,0, { cr="GREEN", a=1 })
 	self:AddTimer(self.EVENT, BS["Mind-numbing Poison"],14, 1,0,0, { cr="GREEN", a=1, { d={rt={10,12,14}} }})
 	self:AddTimer(self.EVENT, BS["Crippling Poison"],   12, 1,0,0, { cr="GREEN", a=1 })
+	self:AddTimer(self.EVENT, BS["Holy Strength"], 	    15, 0,1,1, { cr="YELLOW", a=1 })
 
 	--self:AddTimer(A.SKILL, C.RIPOSTE,          5, 0,1,1, { cr="YELLOW" })
 end
