@@ -1,6 +1,6 @@
 --[[
 	Name: Babble-Spell-2.2
-	Revision: $Rev: 25188 $
+	Revision: $Rev: 25189 $
 	Author(s): ckknight (ckknight@gmail.com)
 	Website: http://ckknight.wowinterface.com/
 	Documentation: http://wiki.wowace.com/index.php/Babble-Spell-2.2
@@ -10,7 +10,7 @@
 ]]
 
 local MAJOR_VERSION = "Babble-Spell-2.2"
-local MINOR_VERSION = tonumber(string.sub("$Revision: 25188 $", 12, -3))
+local MINOR_VERSION = tonumber(string.sub("$Revision: 25189 $", 12, -3))
 
 if not AceLibrary then error(MAJOR_VERSION .. " requires AceLibrary") end
 if not AceLibrary:HasInstance("AceLocale-2.2") then error(MAJOR_VERSION .. " requires AceLocale-2.2") end
@@ -543,6 +543,7 @@ BabbleSpell:RegisterTranslations("enUS", function()
 		["Forked Lightning"] = true,
 		["Forsaken Skills"] = true,
 		["Frailty"] = true,
+		["Free Action"] = true,
 		["Freeze Solid"] = true,
 		["Freezing Trap Effect"] = true,
 		["Freezing Trap"] = true,
@@ -1108,6 +1109,7 @@ BabbleSpell:RegisterTranslations("enUS", function()
 		["Renew"] = true,
 		["Repentance"] = true,
 		["Repulsive Gaze"] = true,
+		["Restoration"] = true,
 		["Restorative Totems"] = true,
 		["Resurrection"] = true,
 		["Retaliation"] = true,
@@ -9394,6 +9396,7 @@ local spellIcons = {
 	["Forked Lightning"] = "Spell_Nature_ChainLightning",
 	["Forsaken Skills"] = "Spell_Shadow_AntiShadow",
 	["Frailty"] = "Spell_Shadow_AnimateDead",
+	["Free Action"] = "INV_Potion_04",
 	["Freeze Solid"] = "Spell_Fost_Glacier",
 	["Freezing Trap"] = "Spell_Frost_ChainsOfIce",
 	["Frenzied Regeneration"] = "Ability_BullRush",
@@ -9940,6 +9943,7 @@ local spellIcons = {
 	["Renew"] = "Spell_Holy_Renew",
 	["Repentance"] = "Spell_Holy_PrayerOfHealing",
 	["Repulsive Gaze"] = "Ability_GolemThunderClap",
+	["Restoration"] = "Spell_Holy_DispelMagic",
 	["Restorative Totems"] = "Spell_Nature_ManaRegenTotem",
 	["Resurrection"] = "Spell_Holy_Resurrection",
 	["Retaliation"] = "Ability_Warrior_Challange",
