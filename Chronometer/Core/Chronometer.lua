@@ -941,13 +941,14 @@ function Chronometer:SPELL_PERIODIC(event, info)
 		unit = info.victim
 	end
 	aura = info.skill
-	_, _, rank = string.find(aura,"%s([IV]+)")
+	_, _, rank = string.find(aura,"%s([IV]+)[^u]")
 	if rank then
 		rank = latins[rank]
-		aura = string.gsub(aura,"%s([IV]+)","")
+		aura = string.gsub(aura,"%s([IV]+)[^u]","")
 	end
---	Sea.io.print(aura, " | ", rank)
---	self:Debug(aura)
+	
+	self:Debug(join({aura,rank}," | "))
+	
 	if aura == "Deep Wound" then aura = "Deep Wounds"  end   
 	
 	local timer = self.timers[self.EVENT][aura]	
