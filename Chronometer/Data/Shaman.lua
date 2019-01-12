@@ -52,6 +52,9 @@ function Chronometer:ShamanSetup()
 	self:AddTimer(self.EVENT, BS["Ancestral Fortitude"],  15, 1,1,0, { cr="GREEN", a=1 })
 	self:AddTimer(self.EVENT, BS["Clearcasting"],        15, 0,1,1, { cr="GREEN", a=1 })
 	self:AddTimer(self.EVENT, BS["Healing Way"],         15, 1,1,0, { cr="GREEN" })
+	
+	self:AddTimer(self.EVENT, BS["Flurry"],               15, 0,1,1, { cr="MAROON", a=1, romc=true})
+	
 end
 
 table.insert(Chronometer.dataSetup, Chronometer.ShamanSetup)
