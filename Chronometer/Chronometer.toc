@@ -1,9 +1,9 @@
 ﻿## Interface: 11200
-## Author: Bhattu, fixes: laytya
+## Author: Bhattu, fixes: laytya, dein0s
 ## Title: Chronometer |cff7fff7f -Ace2-|r
 ## Notes: Chronometer - an Ace2 Timer Mod based on AceTimer for Vanilla
 ## Notes-zhCN: Chronometer - 基于AceTimer的Ace2计时条插件
-## Version: 0.12.2
+## Version: 0.13
 ## DefaultState:
 ## Dependencies:
 ## OptionalDeps: Ace2, Babble-2.2, PaintChipsLib, CompostLib, CandyBar, Deformat, GratuityLib, SpellCacheLib, ParserLib, DewdropLib
@@ -60,4 +60,4 @@ Data\Shaman.lua
 Data\Warlock.lua
 Data\Warrior.lua
 Data\Racial.lua
-Data\Procs.lua
+Data\Common.lua
