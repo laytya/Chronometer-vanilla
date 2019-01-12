@@ -66,6 +66,12 @@ v0.12.1
 + Added Rogue poisons support
 + Libs update
 
+v0.13
++ Added visibility configuration of spells in options by @dein0s
++ Added Flurry timer by @dein0s
++ Fixed Fire Vulnerability update mechanics
++ Added some SPD trinkets timers & Crusader proc
+
 == TODO: ==
 * Go through and make sure that all spell timers are accurate
 * Add rogue poisons
