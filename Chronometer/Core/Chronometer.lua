@@ -37,7 +37,7 @@ local defaults = {
 	fadeonfade = true,
 	barposition = {},
 	bartex = "default",
-	ghost = 0,
+	ghost = nil,
 	selfbars = true,
 	barwidth = nil,
 	barheight = nil,
@@ -52,11 +52,6 @@ local defaults = {
 	showIcon = true,
 	showText = true,
 	uncolored = true,
-	onlyself = false,
-	disabledSpells = {
-		COMMON = {},
-		RACIAL = {},
-	},
 }
 	
 
@@ -205,7 +200,7 @@ function Chronometer:OnInitialize()
 			main = {
 				name = L["General"], type = "group", desc = L["General options"], order = 10,
 				args = {
-					anchor = {name = L["Anchor"], desc = L["Shows the dragable anchor."], type = "execute", func = "ToggleAnchor", order = 80, } ,
+					anchor = {name = L["Anchor"], desc = L["Shows the dragable anchor."], type = "execute", func = "ToggleAnchor", order = 70, } ,
 					
 					ghost = {name = L["Ghost"], desc = L["Change the amount of time that ghost bars stay up."], type = "range",  order = 30,
 						get = function () return self.db.profile.ghost end,
@@ -222,58 +217,13 @@ function Chronometer:OnInitialize()
 					self = {
 						name = L["Self"], desc = L["Toggles bars for spell durations on the player."], type = "toggle",  order = 60,
 						get = function() return self.db.profile.selfbars end,
-						set = function(f) self.db.profile.selfbars = f end,},
-					onlyself = {
-						name = "Only self", desc = "add later", type = "toggle", order = 70,
-						get = function() return self.db.profile.onlyself end,
-						set = function(f) self.db.profile.onlyself = f end,
+						set = function(f) self.db.profile.selfbars = f end,
 					},
 					
 				},
 			},
-			class = {
-				name = "Class timers", desc = "Class specific timers", type = "group", order = 20,
-				args = {
-					spellt = {
-						name = "Spells", desc = "TEMP", type = "group", order = 10,
-						args = {},
-					},
-					eventt = {
-						name = "Events", desc = "TEMP", type = "group", order = 20,
-						args = {},
-					},
-				},
-			},
-			racial = {
-				name = "Racial timers", desc = "Race specific timers", type = "group", order = 30,
-				args = {
---[[					spellt = {
-						name = "Spells", desc = "TEMP", type = "group", order = 10,
-						args = {},
-					},
-					eventt = {
-						name = "Events", desc = "TEMP", type = "group", order = 20,
-						args = {},
-					},
-]]
-				},
-			},
-			common = {
-				name = "Common timers", desc = "Common timers (trinkets, potions, etc.)", type = "group", order = 40,
-				args = {
---[[					spellt = {
-						name = "Spells", desc = "TEMP", type = "group", order = 10,
-						args = {},
-					},
-					eventt = {
-						name = "Events", desc = "TEMP", type = "group", order = 20,
-						args = {},
-					},
-]]
-				},
-			},
 			bar = {
-				name = L["Bar"], desc=L["CandyBar options"], type = "group", order = 50,
+				name = L["Bar"], desc=L["CandyBar options"], type = "group", order = 20,
 				args = {
 					test = {name = L["Test"], desc = L["Runs test bars."], type = "execute", func = "RunTest", order = 10,},
 					texture = {
@@ -479,17 +429,17 @@ function Chronometer:OnEnable()
 	self.parser:RegisterEvent("Chronometer", "CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_BUFFS",  function (event, info) self:SPELL_PERIODIC(event, info) end)
 	self.parser:RegisterEvent("Chronometer", "CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", function (event, info) self:SPELL_PERIODIC(event, info) end)
 
-	-- Refresh-on-melee hit/crit handling
+	-- Refresh-on-melee handling
 	local enableRoM = false
 	for n, t in pairs(self.timers[self.SPELL]) do
-		if t.x.rom or t.x.romc then
+		if t.x.rom then
 			enableRoM = true
 			break
 		end
 	end
 	if not enableRom then
 		for n, t in pairs(self.timers[self.EVENT]) do
-			if t.x.rom or t.x.romc then
+			if t.x.rom then
 				enableRoM = true
 				break
 			end
@@ -497,7 +447,6 @@ function Chronometer:OnEnable()
 	end
 	if enableRoM then
 		self.parser:RegisterEvent("Chronometer", "CHAT_MSG_COMBAT_SELF_HITS", function (event, info) self:SELF_HITS(event, info) end)
-		self.parser:RegisterEvent("Chronometer", "CHAT_MSG_COMBAT_SELF_HITS", function (event, info) self:SELF_CRITS(event, info) end)
 	end
 
 	-- Spellcast handling
@@ -518,41 +467,6 @@ function Chronometer:OnEnable()
 	self.parser:RegisterEvent("Chronometer", "CHAT_MSG_SPELL_SELF_DAMAGE", function(event, info) self:SELF_DAMAGE(event, info) end)
 	self.parser:RegisterEvent("Chronometer", "CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF", function(event, info) self:SELF_DAMAGE(event, info) end)
 	self.parser:RegisterEvent("Chronometer", "CHAT_MSG_SPELL_FAILED_LOCALPLAYER", function(event, info) self:SPELL_FAILED(event, info) end)
-	
-	
-	-- Fill options with timers
-	local _, class = UnitClass("player")
-	if self.db.profile.disabledSpells[class] == nil then
-		self.db.profile.disabledSpells[class] = {}
-	end
-	for k,v in pairs(self.timers) do
-		local timer_type = k == 1 and "spellt" or "eventt"
-		for k1, v1 in pairs(v) do
-			local timer_grp, disabled_grp
-			if v1.x.cl == "COMMON" then
-				timer_grp = "common"
-				disabled_grp = "COMMON"
-			elseif v1.x.cl == "RACIAL" then
-				timer_grp = "racial"
-				disabled_grp = "RACIAL"
-			else
-				timer_grp = "class"
-				disabled_grp = class
-			end
-			local timer_name = k1
-			timer_toggle = {
-				name = timer_name, type = "toggle",
-				get = function() return self.db.profile.disabledSpells[disabled_grp][timer_name]==nil and true or false end,
-				set = function(f) self.db.profile.disabledSpells[disabled_grp][timer_name] = f==false and {} or nil end,
-			}
-			if timer_grp == "class" then
-				options.args[timer_grp].args[timer_type].args[timer_name] = timer_toggle
-			else
-				options.args[timer_grp].args[timer_name] = timer_toggle
-			end
-		end
-	end
-	
 end
 
 function Chronometer:OnDisable()
@@ -654,18 +568,12 @@ function Chronometer:AddTimer(kind, name, duration, targeted, isgain, selforsele
 end
 
 function Chronometer:StartTimer(timer, name, target, rank, durmod)
-	-- check if spell is disabled
-	local _, class = UnitClass("player")
-	local timer_class = timer.x.cl == nil and class or timer.x.cl
-	if self.db.profile.disabledSpells[timer_class][name]~=nil then return end
-		-- check if spell is disabled
 	if not target then target = "none" end
 	if not rank then rank = timer.r or 0 end
 	if not durmod then durmod = 0 end
 	if timer.x.gr then self:CleanGroup(timer.x.gr, target) end
 	if timer.d == 0 then return end
 	if (not self.db.profile.selfbars) and (target == UnitName("player") or (target == "none" and timer.k.g)) then return end
-	if (self.db.profile.onlyself) and (timer.k.t ~= nil and target ~= UnitName("player")) then return end
 
 	local id, slot = name.."-"..target
 	for i = 20, 1, -1 do
@@ -1063,20 +971,6 @@ function Chronometer:SPELL_PERIODIC(event, info)
 	end
 end
 
-
-function Chronometer:SELF_CRITS(event, info)
-		-- Process refresh-on-crit buffs (flurry)
-	if info.type == "hit" and info.source == ParserLib_SELF and info.isCrit then
-		for i = 1, 20 do
-			if self.bars[i].id then
-				if self.bars[i].timer.x.romc then
-					self:StartTimer(self.bars[i].timer, self.bars[i].name, self.bars[i].target, self.bars[i].rank)
-				end
-			end
-		end
-	end
-end
-
 -- Now spellcast handling - the big one
 
 --<< ====================================================================== >>--
@@ -1220,6 +1114,7 @@ function Chronometer:SPELLCAST_STOP()
 		else
 			self.active[captive.n] = {t=captive.t, n=captive.n, u=captive.u, r=captive.r}
 			--self.active[captive.n].t.cp = captive.t.cp
+			
 			self:ScheduleEvent(self.CompleteCast, 0.5, self, captive.n)
 		end
 	end
@@ -1281,18 +1176,8 @@ function Chronometer:SELF_DAMAGE(event, info)
 				event.r = nil; event.v = nil; event.t = nil
 			end
 		end
+
 		self.active[info.skill] = nil
-	elseif active and info.type == "hit" and info.victim == active.u then
-		if active.t and active.t.x.ea then
-			for name, valid in pairs(active.t.x.ea) do
-				local event = self.timers[Chronometer.EVENT][name]
-				for i = 1, 20 do
-					if self.bars[i].id and self.bars[i].id == name.."-"..info.victim then
-						self:StartTimer(self.bars[i].timer, self.bars[i].name, self.bars[i].target, self.bars[i].rank)
-					end
-				end
-			end
-		end
 	end
 end
 
