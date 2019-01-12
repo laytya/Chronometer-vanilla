@@ -3,7 +3,7 @@
 --<< ====================================================================== >>--
 local BS = AceLibrary("Babble-Spell-2.2")
 
-function Chronometer:RacialSetup()
+function Chronometer:ProcsSetup()
 
 	local _, eclass = UnitClass("player")
 	
@@ -15,4 +15,4 @@ function Chronometer:RacialSetup()
 	
 end
 
-table.insert(Chronometer.dataSetup, Chronometer.RacialSetup)
+table.insert(Chronometer.dataSetup, Chronometer.ProcsSetup)
