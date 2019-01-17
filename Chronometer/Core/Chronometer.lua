@@ -540,15 +540,16 @@ function Chronometer:OnEnable()
 				disabled_grp = class
 			end
 			local timer_name = k1
+			local section_name = string.gsub(timer_name,"(%s+)","_")
 			timer_toggle = {
-				name = timer_name, type = "toggle",
+				name = timer_name, type = "toggle", desc = timer_name,
 				get = function() return self.db.profile.disabledSpells[disabled_grp][timer_name]==nil and true or false end,
 				set = function(f) self.db.profile.disabledSpells[disabled_grp][timer_name] = f==false and {} or nil end,
 			}
 			if timer_grp == "class" then
-				options.args[timer_grp].args[timer_type].args[timer_name] = timer_toggle
+				options.args[timer_grp].args[timer_type].args[section_name] = timer_toggle
 			else
-				options.args[timer_grp].args[timer_name] = timer_toggle
+				options.args[timer_grp].args[section_name] = timer_toggle
 			end
 		end
 	end
