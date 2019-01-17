@@ -13,6 +13,8 @@ Chronometer:RegisterDB("ChronometerDB")
 Chronometer.SPELL = 1
 Chronometer.EVENT = 2
 
+Chronometer.revision = GetAddOnMetadata("Chronometer", "Version");
+
 Chronometer.dataSetup = {}
 
 -- stuff for FuBar:
@@ -196,15 +198,22 @@ function Chronometer:OnInitialize()
 		["fifths"] = "Interface\\Addons\\Chronometer\\Textures\\Fifths",
 		["smoothv2"] = "Interface\\Addons\\Chronometer\\Textures\\Smoothv2",
 	}
-
+	local hcolor = "|cFF77BBFF"
 	options = {
 		type = "group",
 		icon = "Interface\\AddOns\\Chronometer\\icon",
 		args = {
-
+			header = {
+				type = "header",
+				name = hcolor..L["Chronometer Options"].."  |c88888888 v"..self.revision,
+				icon = "Interface\\AddOns\\Chronometer\\icon",
+				order = 1,
+			}, 
+			mspacer = {	type = "header",	order = 3	},
 			main = {
-				name = L["General"], type = "group", desc = L["General options"], order = 10,
+				name = hcolor.. L["General"], type = "group", desc = L["General options"], order = 10,
 				args = {
+					aheader = {type = "header",	name = hcolor..L["General options"], order = 1 },
 					anchor = {name = L["Anchor"], desc = L["Shows the dragable anchor."], type = "execute", func = "ToggleAnchor", order = 80, } ,
 					
 					ghost = {name = L["Ghost"], desc = L["Change the amount of time that ghost bars stay up."], type = "range",  order = 30,
@@ -224,56 +233,41 @@ function Chronometer:OnInitialize()
 						get = function() return self.db.profile.selfbars end,
 						set = function(f) self.db.profile.selfbars = f end,},
 					onlyself = {
-						name = "Only self", desc = "add later", type = "toggle", order = 70,
+						name = L["Only self"], desc =  L["Only self"], type = "toggle", order = 70,
 						get = function() return self.db.profile.onlyself end,
 						set = function(f) self.db.profile.onlyself = f end,
 					},
-					
 				},
 			},
-			class = {
-				name = "Class timers", desc = "Class specific timers", type = "group", order = 20,
+			timers = {
+				name = hcolor.. L["Timers"], type = "group", desc = L["Timers visibility options"], order = 20,
 				args = {
+					aheader = {type = "header",	name = hcolor..L["Timers visibility options"], order = 1 },
 					spellt = {
-						name = "Spells", desc = "TEMP", type = "group", order = 10,
+						classpellheader = {type = "header", name = hcolor..L["Class Spell timers"], order = 1},
+						name = L["Class Spells"], desc = L["Class Spell timers"], type = "group", order = 20,
 						args = {},
 					},
 					eventt = {
-						name = "Events", desc = "TEMP", type = "group", order = 20,
+						classeventheader = {type = "header", name = hcolor..L["Class Event timers"], order = 1},
+						name = L["Class Events"], desc = L["Class Event timers"], type = "group", order = 30,
 						args = {},
 					},
-				},
-			},
 			racial = {
-				name = "Racial timers", desc = "Race specific timers", type = "group", order = 30,
-				args = {
---[[					spellt = {
-						name = "Spells", desc = "TEMP", type = "group", order = 10,
+						rheader = {type = "header", name = hcolor..L["Race specific timers"], order = 1},
+						name = L["Racial"], desc = L["Race specific timers"], type = "group", order = 50,
 						args = {},
 					},
-					eventt = {
-						name = "Events", desc = "TEMP", type = "group", order = 20,
-						args = {},
-					},
-]]
-				},
-			},
 			common = {
-				name = "Common timers", desc = "Common timers (trinkets, potions, etc.)", type = "group", order = 40,
-				args = {
---[[					spellt = {
-						name = "Spells", desc = "TEMP", type = "group", order = 10,
+						comheader = {type = "header", name = hcolor..L["Common timers"], order = 1},
+						name = L["Common"], desc = L["Common timers (trinkets, potions, etc.)"], type = "group", order = 70,
 						args = {},
 					},
-					eventt = {
-						name = "Events", desc = "TEMP", type = "group", order = 20,
-						args = {},
-					},
-]]
 				},
 			},
+						
 			bar = {
-				name = L["Bar"], desc=L["CandyBar options"], type = "group", order = 50,
+				name = hcolor.. L["Bar"], desc=L["CandyBar options"], type = "group", order = 50,
 				args = {
 					test = {name = L["Test"], desc = L["Runs test bars."], type = "execute", func = "RunTest", order = 10,},
 					texture = {
@@ -547,9 +541,9 @@ function Chronometer:OnEnable()
 				set = function(f) self.db.profile.disabledSpells[disabled_grp][timer_name] = f==false and {} or nil end,
 			}
 			if timer_grp == "class" then
-				options.args[timer_grp].args[timer_type].args[section_name] = timer_toggle
+				options.args.timers.args[timer_type].args[section_name] = timer_toggle
 			else
-				options.args[timer_grp].args[section_name] = timer_toggle
+				options.args.timers.args[timer_grp].args[section_name] = timer_toggle
 			end
 		end
 	end

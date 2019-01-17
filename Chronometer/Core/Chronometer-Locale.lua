@@ -4,6 +4,8 @@ L:RegisterTranslations("enUS", function() return {
 	["Chronometer"] = true,
 	["Chronometer - an Ace2 Timer Mod"] = true,
 
+	["Chronometer Options"]= true, -- 0.13
+
 	["General"] =true,
 	["General options"] = true,
 		
@@ -31,6 +33,25 @@ L:RegisterTranslations("enUS", function() return {
 	["Self"] = true,
 	["Toggles bars for spell durations on the player."] = true,
 	
+	["Only self"] = true,  -- << 0.13
+	
+	["Timers"] = true,
+	["Timers visibility options"] = true,
+	
+	["Class specific timers"] = true,
+	["Class Spells"] = true,
+	["Class Events"] = true,
+	
+	["Class Spell timers"] = true,
+	["Class Event timers"] = true,
+	
+	["Race specific timers"] = true,
+	["Racial"] = true,
+	
+	["Common"] = true,
+	["Common timers"] = true,
+	["Common timers (trinkets, potions, etc.)"] = true, -- >> 0.13
+		
 	["Reverse"] = true,
 	["Toggles if bars are reversed (fill up instead of emptying)."] = true,
 
