@@ -1028,10 +1028,10 @@ function Chronometer:SPELL_PERIODIC(event, info)
 		unit = info.victim
 	end
 	aura = info.skill
-	_, _, rank = string.find(aura,"%s([IV]+)[^u]")
+	_, _, rank = string.find(aura,"%s([IVX]+)[^u]")
 	if rank then
 		rank = latins[rank]
-		aura = string.gsub(aura,"%s([IV]+)[^u]","")
+		aura = string.gsub(aura,"%s([IVX]+)[^u]","")
 	end
 	
 	self:Debug(join({aura,rank}," | "))
