@@ -1,4 +1,4 @@
-﻿local L = AceLibrary("AceLocale-2.2"):new("Chronometer")
+local L = AceLibrary("AceLocale-2.2"):new("Chronometer")
 
 L:RegisterTranslations("enUS", function() return {
 	["Chronometer"] = true,
@@ -137,6 +137,25 @@ L:RegisterTranslations("ruRU", function() return {
 	["Self"] = "Свои полосы",
 	["Toggles bars for spell durations on the player."] = "Вкл/Выкл. полос заклинаний на игроке.",
 	
+	["Only self"] = "Только свои",  -- << 0.13
+	
+	["Timers"] = "Таймеры",
+	["Timers visibility options"] = "Настройки отображения таймеров",
+	
+	["Class specific timers"] = "Таймеры определенного класса",
+	["Class Spells"] = "Классовые заклинания",
+	["Class Events"] = "Классовые события",
+	
+	["Class Spell timers"] = "Классовые заклинаний",
+	["Class Event timers"] = "Классовые таймеры событий",
+	
+	["Race specific timers"] = "Специфичные для каждой из расс таймеры",
+	["Racial"] = "Рассовые",
+	
+	["Common"] = "Основные",
+	["Common timers"] = "Основные таймеры",
+	["Common timers (trinkets, potions, etc.)"] = "Основные таймеры (аксесуары, зелья, пр.)", -- >> 0.13
+	
 	["Reverse"] = "Направление изменения полос",
 	["Toggles if bars are reversed (fill up instead of emptying)."] = "Переключение направления изменения полос (заполнение вместо опустошения).",
 
@@ -180,8 +199,8 @@ L:RegisterTranslations("ruRU", function() return {
 	["Bar"] = "Полосы",
 	["CandyBar options"] = "Настройки CandyBar",
 	
-	["Fubar plugin"] = "Плугин Fubar",
-	["Fubar plugin options."] = "Настройки плугин Fubar.",
+	["Fubar plugin"] = "Плагин Fubar",
+	["Fubar plugin options."] = "Настройки плагин Fubar.",
 	
 	["Hide"] = "Скрыть",
 	

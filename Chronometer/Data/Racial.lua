@@ -8,17 +8,17 @@ function Chronometer:RacialSetup()
 
 	local lr, race = UnitRace("player")
 	
-	if race == BR["Dwarf"] then
+	if race == "Dwarf" then
 		self:AddTimer(self.SPELL, BS["Stoneform"],              8, 0,1,1, { cl="RACIAL" })
-	elseif race == BR["Human"] then
+	elseif race == "Human" then
 		self:AddTimer(self.SPELL, BS["Perception"],             20, 0,1,1, { cl="RACIAL" })
-	elseif race == BR["Orc"] then
+	elseif race == "Orc" then
 		self:AddTimer(self.SPELL, BS["Blood Fury"],             15, 0,1,1, { cl="RACIAL" })
-	elseif race == BR["Tauren"] then
+	elseif race == "Tauren" then
 		self:AddTimer(self.SPELL, BS["War Stomp"],              2, 0,0,0, { cl="RACIAL" })
-	elseif race == BR["Troll"] then
+	elseif race == "Troll" then
 		self:AddTimer(self.SPELL, BS["Berserking"],             10, 0,1,1, { cl="RACIAL" })
-	elseif race == BR["Undead"] then
+	elseif race == "Undead" then
 		self:AddTimer(self.SPELL, BS["Will of the Forsaken"],   5, 0,1,1, { cl="RACIAL" })
 	end
 
