@@ -108,6 +108,8 @@ L:RegisterTranslations("ruRU", function() return {
 	["Chronometer"] = "Chronometer",
 	["Chronometer - an Ace2 Timer Mod"] = "Chronometer - Ace2 таймер мод",
 
+	["Chronometer Options"]= "Настройки Chronometer",
+
 	["General"] = "Основное",
 	["General options"] = "Основные настройки",
 	
