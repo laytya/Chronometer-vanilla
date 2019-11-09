@@ -16,7 +16,7 @@ function Chronometer:CommonSetup()
 	-- zg casteer trinket http://classicdb.ch/?item=19950
 	self:AddTimer(self.EVENT, BS["Unstable Power"],          	20, 0, 1, 1, { a=1, cr="CYAN", cl="COMMON" })
 	self:AddTimer(self.EVENT, BS["Ephemeral Power"],          	15, 0, 1, 1, { a=1, cr="CYAN", cl="COMMON" })
-	self:AddTimer(self.EVENT, "Mind Quickening",          		20, 0, 1, 1, { a=1, cr="CYAN", cl="COMMON",xn=BS["Critical Mass"]})
+	self:AddTimer(self.EVENT, "Скорость мысли",          		20, 0, 1, 1, { a=1, cr="CYAN", cl="COMMON",xn=BS["Critical Mass"]})
 end
 
 table.insert(Chronometer.dataSetup, Chronometer.CommonSetup)
