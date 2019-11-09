@@ -28,6 +28,7 @@ libs\AceDebug-2.0\AceDebug-2.0.lua
 libs\AceAddon-2.0\AceAddon-2.0.lua
 
 libs\Babble-Spell-2.2\Babble-Spell-2.2.lua
+libs\Babble-Class-2.2\Babble-Class-2.2.lua
 
 libs\Compost-2.0\Compost-2.0.lua
 
