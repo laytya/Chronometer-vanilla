@@ -146,7 +146,7 @@ L:RegisterTranslations("ruRU", function() return {
 	["Class Spells"] = "Классовые заклинания",
 	["Class Events"] = "Классовые события",
 	
-	["Class Spell timers"] = "Классовые заклинаний",
+	["Class Spell timers"] = "Классовые таймеры заклинаний",
 	["Class Event timers"] = "Классовые таймеры событий",
 	
 	["Race specific timers"] = "Специфичные для каждой из расс таймеры",
