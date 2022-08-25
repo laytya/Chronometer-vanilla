@@ -28,6 +28,7 @@ function Chronometer:HunterSetup()
 	self:AddTimer(self.SPELL, BS["Viper Sting"],              8, 1,0,0, { gr=2, rc=true })
 	self:AddTimer(self.SPELL, BS["Wing Clip"],               10, 1,0,0, { rc=true, ea={[BS["Improved Wing Clip"]]=10} })
 	self:AddTimer(self.SPELL, BS["Wyvern Sting"],            12, 1,0,0, { gr=2, rc=true })
+	self:AddTimer(self.SPELL, BS["Feed Pet"],         		 20, 0,0,0)
 
 	self:AddTimer(self.EVENT, BS["Explosive Trap Effect"],   20, 1,0,1, { gr=1, xn=BS["Explosive Trap"] })
 	self:AddTimer(self.EVENT, BS["Freezing Trap Effect"],    10, 1,0,1, { gr=1, d={rs=5, tn=BS["Clever Traps"], tb=0.15, tp=1}, xn=BS["Freezing Trap"] })
