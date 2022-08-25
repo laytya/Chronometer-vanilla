@@ -1,7 +1,7 @@
 --[[
 Name: CandyBar-2.0
 Revision: 16003
-Author: Ammo (wouter@muze.nl)
+Author: Ammo (wouter@muze.nl) 
 Backport to vanilla: laytya (@gmail.com)
 Website: https://github.com/laytya/LibCandyBar/
 Documentation: http://web.archive.org/web/20070314234510/http://wowace.com/wiki/CandyBar-2.0
@@ -10,7 +10,7 @@ Dependencies: AceLibrary, AceOO-2.0, PaintChips-2.0
 ]]
 local match = string.match
 local getn,setn,tinsert = table.getn, table.setn,table.insert
-local vmajor, vminor = "CandyBar-2.0", "$Revision: 16003 $" 
+local vmajor, vminor = "CandyBar-2.0", "$Revision: 16010 $" 
 
 if not AceLibrary then error(vmajor .. " requires AceLibrary.") end
 if not AceLibrary:IsNewVersion(vmajor, vminor) then return end
@@ -41,6 +41,8 @@ local CandyBar = Mixin {
 	"SetCandyBarWidth",
 	"SetCandyBarHeight",
 	"SetCandyBarBackgroundColor",
+	"SetCandyBarBorderColor",
+	"SetCandyBarBorderTexture",
 	"SetCandyBarTextColor",
 	"SetCandyBarTimerTextColor",
 	"SetCandyBarFontSize",
@@ -86,6 +88,8 @@ local defaults = {
 	fontsize = 11,
 	color = {1, 0, 1, 1},
 	bgcolor = {0, 0.5, 0.5, 0.5},
+	bordercolor = {1,1,1,1},
+	bordertexture = "Interface\\None",
 	textcolor = {1, 1, 1, 1},
 	timertextcolor = {1, 1, 1, 1},
     stayonscreen = false,
@@ -553,7 +557,7 @@ function CandyBar:SetColor(name, color, alpha, b, a)
 	end
 	handler.color = t
 	handler.gradient = nil
-	
+
 	handler.frame.statusbar:SetStatusBarColor(unpack(t, 1, 4))
 	return true
 end
@@ -572,15 +576,41 @@ function CandyBar:SetBackgroundColor(name, color, alpha, b, a)
 
 	local t = setColor(color, alpha, b, a)
 	if not t then return end
-
+	
 	if handler.bgcolor then
 		handler.bgcolor = del(handler.bgcolor)
 	end
 	handler.bgcolor = t
 	handler.frame.statusbarbg:SetStatusBarColor(unpack(t, 1, 4))
+	handler.frame:SetBackdropColor(unpack(t, 1, 4))
 
 	return true
 end
+
+-- Set the color of border of the bar
+-- Args: name - the candybar name
+--	 color - new color of the bar border
+-- 	 alpha - new alpha of the bar border
+-- Setting the color will override smooth settings.
+function CandyBar:SetBorderColor(name, color, alpha, b, a)
+	CandyBar:argCheck(name, 2, "string")
+	local handler = CandyBar.handlers[name]
+	if not handler then
+		return
+	end
+
+	local t = setColor(color, alpha, b, a)
+	if not t then return end
+
+	if handler.bordercolor then
+		handler.bordercolor = del(handler.bordercolor)
+	end
+	handler.bordercolor = t
+	handler.frame:SetBackdropBorderColor(unpack(t, 1, 4))
+	return true
+end
+
+
 
 -- Set the color for the bar text
 -- Args: name - name of the candybar
@@ -961,6 +991,32 @@ function CandyBar:SetTexture(name, texture)
 
 	handler.frame.statusbar:SetStatusBarTexture(texture)
 	handler.frame.statusbarbg:SetStatusBarTexture(texture)
+
+	return true
+end
+
+-- Set the texture for a bar
+-- Args: name - name of the candybar
+--	 texture - new texture, if passed nil, the texture is reset to default
+-- returns true when succesful
+function CandyBar:SetBorderTexture(name, texture)
+	CandyBar:argCheck(name, 2, "string")
+	CandyBar:argCheck(texture, 3, "string", "nil")
+	
+	local handler = CandyBar.handlers[name]
+	if not handler then
+		return
+	end
+	if not texture then
+		texture = defaults.bordertexture
+	end
+
+	handler.bordertexture = texture
+	local backdrop = handler.frame:GetBackdrop()
+	backdrop.edgefile = texture
+	handler.frame:SetBackdrop(backdrop)
+	handler.frame:SetBackdropBorderColor(unpack(handler.bordercolor, 1, 4))
+	handler.frame:SetBackdropColor(unpack(handler.bgcolor, 1, 4))
 
 	return true
 end
@@ -1462,10 +1518,12 @@ function CandyBar:UpdateFade(name)
 		local p = t / handler.fadetime
 		local color = handler.color or defaults.color
 		local bgcolor = handler.bgcolor or defaults.bgcolor
+		local bordercolor = handler.bordercolor or defaults.bordercolor
 		local textcolor = handler.textcolor or defaults.textcolor
 		local timertextcolor = handler.timertextcolor or defaults.timertextcolor
 		local colora = color[4] * p
 		local bgcolora = bgcolor[4] * p
+		local bordercolora = bordercolor[4] * p
 		local textcolora = textcolor[4] * p
 		local timertextcolora = timertextcolor[4] * p
 
@@ -1473,156 +1531,188 @@ function CandyBar:UpdateFade(name)
 		handler.frame.statusbar:SetStatusBarColor(color[1], color[2], color[3], colora)
 		handler.frame.text:SetTextColor(textcolor[1], textcolor[2], textcolor[3], textcolora)
 		handler.frame.timertext:SetTextColor(timertextcolor[1], timertextcolor[2], timertextcolor[3], timertextcolora)
+		handler.frame:SetBackdropBorderColor(bordercolor[1], bordercolor[2], bordercolor[3], bordercolora)
+		handler.frame:SetBackdropColor(bgcolor[1], bgcolor[2], bgcolor[3], bgcolora)
+		
 		handler.frame.icon:SetAlpha(p)
 	end
 	return true
 end
-
+do 
+	local backdrop = { insets = {} }
+	local backdrop_insets = backdrop.insets
+	
 -- Internal Method
 -- Create and return a new bar frame, recycles where needed
 -- Name - which candybar is this for
 -- Returns the frame
-function CandyBar:AcquireBarFrame(name)
-	local handler = CandyBar.handlers[name]
-	if not handler then
-		return
+	function CandyBar:AcquireBarFrame(name)
+		local handler = CandyBar.handlers[name]
+		if not handler then
+			return
+		end
+
+		local f = handler.frame
+
+		local color = handler.color or defaults.color
+		local bgcolor = handler.bgcolor or defaults.bgcolor
+		local bordercolor = handler.bordercolor or defaults.bordercolor
+		local bordertexture = handler.bordertexture or defaults.bordertexture
+		local icon = handler.icon or nil
+		local iconpos = handler.iconpos or defaults.iconpos
+		local texture = handler.texture or defaults.texture
+		local width = handler.width or defaults.width
+		local height = handler.height or defaults.height
+		local point = handler.point or defaults.point
+		local rframe = handler.rframe or defaults.rframe
+		local rpoint = handler.rpoint or defaults.rpoint
+		local xoffset = handler.xoffset or defaults.xoffset
+		local yoffset = handler.yoffset or defaults.yoffset
+		local text = handler.text or defaults.text
+		local fontsize = handler.fontsize or defaults.fontsize
+		local textcolor = handler.textcolor or defaults.textcolor
+		local timertextcolor = handler.timertextcolor or defaults.timertextcolor
+		local scale = handler.scale or defaults.scale
+		if not scale then
+			scale = 1
+		end
+		local timertextwidth = fontsize * 3.6
+		local font, _, style = GameFontHighlight:GetFont()
+
+		if not f and getn(CandyBar.framepool) > 0 then
+			f = table.remove(CandyBar.framepool)
+		end
+
+		if not f then
+			f = CreateFrame("Button", nil, UIParent)
+		end
+		f:Hide()
+		f.owner = name
+		-- yes we add the height to the width for the icon.
+		f:SetWidth(width + 10)
+		f:SetHeight(height + 10)
+		f:ClearAllPoints()
+		f:SetPoint(point, rframe, rpoint, xoffset, yoffset)
+		-- disable mouse
+		f:EnableMouse(false)
+		f:RegisterForClicks()
+		f:SetScript("OnClick", nil)
+		f:SetScale(scale)
+		-- LaYt
+		backdrop.bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"
+		backdrop.tile = true
+		backdrop.tileSize = 16
+		backdrop.edgeFile = bordertexture
+		backdrop.edgeSize = 16
+		backdrop_insets.left = 4
+		backdrop_insets.right = 4
+		backdrop_insets.top = 4
+		backdrop_insets.bottom = 4
+		f:SetBackdrop(backdrop)
+		f:SetBackdropBorderColor(unpack(bordercolor, 1, 4))
+		f:SetBackdropColor(unpack(bgcolor, 1, 4))
+
+		if not f.icon then
+			f.icon = CreateFrame("Button", nil, f)
+		end
+		f.icon:ClearAllPoints()
+		f.icon.owner = name
+		f.icon:EnableMouse(false)
+		f.icon:RegisterForClicks()
+		f.icon:SetScript("OnClick", nil)
+		-- an icno is square and the height of the bar, so yes 2x height there
+		f.icon:SetHeight(height)
+		f.icon:SetWidth(height)
+		local delta = 0 -- height/2 + 2
+		if iconpos == "LEFT" then
+			f.icon:SetPoint("RIGHT", f, "LEFT", -2, 0)
+			
+		else --L["Right"]
+			f.icon:SetPoint("LEFT", f, "RIGHT", 2, 0)
+			delta = -delta
+		end
+	--	f.icon:SetPoint("LEFT", f, iconpos, 0, 0)
+		f.icon:SetNormalTexture(icon)
+		if f.icon:GetNormalTexture() then 
+			f.icon:GetNormalTexture():SetTexCoord( 0.07, 0.93, 0.07, 0.93)
+		end 
+		f.icon:SetAlpha(1)
+		f.icon:Show()
+
+		if not f.statusbarbg then
+			f.statusbarbg = CreateFrame("StatusBar", nil, f)
+			f.statusbarbg:SetFrameLevel(f.statusbarbg:GetFrameLevel() - 1)
+		end
+		f.statusbarbg:ClearAllPoints()
+		f.statusbarbg:SetHeight(height)
+		f.statusbarbg:SetWidth(width)
+		-- offset the height of the frame on the x-axis for the icon.
+	--	f.statusbarbg:SetPoint("TOPLEFT", f, "TOPLEFT", height, 0)
+		f.statusbarbg:SetPoint('CENTER',f,'CENTER', delta, 0)
+		f.statusbarbg:SetStatusBarTexture(texture)
+		f.statusbarbg:SetStatusBarColor(bgcolor[1],bgcolor[2],bgcolor[3],bgcolor[4])
+		f.statusbarbg:SetMinMaxValues(0,100)
+		f.statusbarbg:SetValue(100)
+
+		if not f.statusbar then
+			f.statusbar = CreateFrame("StatusBar", nil, f)
+		end
+		f.statusbar:ClearAllPoints()
+		f.statusbar:SetHeight(height)
+		f.statusbar:SetWidth(width)
+		-- offset the height of the frame on the x-axis for the icon.
+	--	f.statusbar:SetPoint("TOPLEFT", f, "TOPLEFT", height, 0)
+		f.statusbar:SetPoint('CENTER',f,'CENTER', delta, 0)
+		f.statusbar:SetStatusBarTexture(texture)
+		f.statusbar:SetStatusBarColor(color[1], color[2], color[3], color[4])
+		f.statusbar:SetMinMaxValues(0,1)
+		f.statusbar:SetValue(1)
+
+
+		if not f.spark then
+			f.spark = f.statusbar:CreateTexture(nil, "OVERLAY")
+		end
+		f.spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
+		f.spark:SetWidth(16)
+		f.spark:SetHeight(height + 25)
+		f.spark:SetBlendMode("ADD")
+		f.spark:Show()
+
+		if not f.timertext then
+			f.timertext = f.statusbar:CreateFontString(nil, "OVERLAY")
+		end
+		f.timertext:SetFontObject(GameFontHighlight)
+		f.timertext:SetFont(font, fontsize, style)
+		f.timertext:SetHeight(height)
+		f.timertext:SetWidth(timertextwidth)
+		f.timertext:SetPoint("LEFT", f.statusbar, "LEFT", 0, 0)
+		f.timertext:SetJustifyH("RIGHT")
+		f.timertext:SetText("")
+		f.timertext:SetTextColor(timertextcolor[1], timertextcolor[2], timertextcolor[3], timertextcolor[4])
+
+		if not f.text then
+			f.text = f.statusbar:CreateFontString(nil, "OVERLAY")
+		end
+		f.text:SetFontObject(GameFontHighlight)
+		f.text:SetFont(font, fontsize, style)
+		f.text:SetHeight(height)
+		f.text:SetWidth((width - timertextwidth) *.9)
+		f.text:SetPoint("RIGHT", f.statusbar, "RIGHT", 0, 0)
+		f.text:SetJustifyH("LEFT")
+		f.text:SetText(text)
+		f.text:SetTextColor(textcolor[1], textcolor[2], textcolor[3], textcolor[4])
+
+		if handler.onclick then
+			f:EnableMouse(true)
+			f:RegisterForClicks("LeftButtonUp", "RightButtonUp", "MiddleButtonUp", "Button4Up", "Button5Up", "RightButtonDown")
+			f:SetScript("OnClick", onClick)
+			f.icon:EnableMouse(true)
+			f.icon:RegisterForClicks("LeftButtonUp", "RightButtonUp", "MiddleButtonUp", "Button4Up", "Button5Up", "RightButtonDown")
+			f.icon:SetScript("OnClick", onClick)
+		end
+		
+		return f
 	end
-
-	local f = handler.frame
-
-	local color = handler.color or defaults.color
-	local bgcolor = handler.bgcolor or defaults.bgcolor
-	local icon = handler.icon or nil
-	local iconpos = handler.iconpos or defaults.iconpos
-	local texture = handler.texture or defaults.texture
-	local width = handler.width or defaults.width
-	local height = handler.height or defaults.height
-	local point = handler.point or defaults.point
-	local rframe = handler.rframe or defaults.rframe
-	local rpoint = handler.rpoint or defaults.rpoint
-	local xoffset = handler.xoffset or defaults.xoffset
-	local yoffset = handler.yoffset or defaults.yoffset
-	local text = handler.text or defaults.text
-	local fontsize = handler.fontsize or defaults.fontsize
-	local textcolor = handler.textcolor or defaults.textcolor
-	local timertextcolor = handler.timertextcolor or defaults.timertextcolor
-	local scale = handler.scale or defaults.scale
-	if not scale then
-		scale = 1
-	end
-	local timertextwidth = fontsize * 3.6
-	local font, _, style = GameFontHighlight:GetFont()
-
-	if not f and getn(CandyBar.framepool) > 0 then
-		f = table.remove(CandyBar.framepool)
-	end
-
-	if not f then
-		f = CreateFrame("Button", nil, UIParent)
-	end
-	f:Hide()
-	f.owner = name
-	-- yes we add the height to the width for the icon.
-	f:SetWidth(width + height)
-	f:SetHeight(height)
-	f:ClearAllPoints()
-	f:SetPoint(point, rframe, rpoint, xoffset, yoffset)
-	-- disable mouse
-	f:EnableMouse(false)
-	f:RegisterForClicks()
-	f:SetScript("OnClick", nil)
-	f:SetScale(scale)
-
-	if not f.icon then
-		f.icon = CreateFrame("Button", nil, f)
-	end
-	f.icon:ClearAllPoints()
-	f.icon.owner = name
-	f.icon:EnableMouse(false)
-	f.icon:RegisterForClicks()
-	f.icon:SetScript("OnClick", nil)
-	-- an icno is square and the height of the bar, so yes 2x height there
-	f.icon:SetHeight(height)
-	f.icon:SetWidth(height)
-	f.icon:SetPoint("LEFT", f, iconpos, 0, 0)
-	f.icon:SetNormalTexture(icon)
-	if f.icon:GetNormalTexture() then 
-		f.icon:GetNormalTexture():SetTexCoord( 0.07, 0.93, 0.07, 0.93)
-	end 
-	f.icon:SetAlpha(1)
-	f.icon:Show()
-
-	if not f.statusbarbg then
-		f.statusbarbg = CreateFrame("StatusBar", nil, f)
-		f.statusbarbg:SetFrameLevel(f.statusbarbg:GetFrameLevel() - 1)
-	end
-	f.statusbarbg:ClearAllPoints()
-	f.statusbarbg:SetHeight(height)
-	f.statusbarbg:SetWidth(width)
-	-- offset the height of the frame on the x-axis for the icon.
-	f.statusbarbg:SetPoint("TOPLEFT", f, "TOPLEFT", height, 0)
-	f.statusbarbg:SetStatusBarTexture(texture)
-	f.statusbarbg:SetStatusBarColor(bgcolor[1],bgcolor[2],bgcolor[3],bgcolor[4])
-	f.statusbarbg:SetMinMaxValues(0,100)
-	f.statusbarbg:SetValue(100)
-
-	if not f.statusbar then
-		f.statusbar = CreateFrame("StatusBar", nil, f)
-	end
-	f.statusbar:ClearAllPoints()
-	f.statusbar:SetHeight(height)
-	f.statusbar:SetWidth(width)
-	-- offset the height of the frame on the x-axis for the icon.
-	f.statusbar:SetPoint("TOPLEFT", f, "TOPLEFT", height, 0)
-	f.statusbar:SetStatusBarTexture(texture)
-	f.statusbar:SetStatusBarColor(color[1], color[2], color[3], color[4])
-	f.statusbar:SetMinMaxValues(0,1)
-	f.statusbar:SetValue(1)
-
-
-	if not f.spark then
-		f.spark = f.statusbar:CreateTexture(nil, "OVERLAY")
-	end
-	f.spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
-	f.spark:SetWidth(16)
-	f.spark:SetHeight(height + 25)
-	f.spark:SetBlendMode("ADD")
-	f.spark:Show()
-
-	if not f.timertext then
-		f.timertext = f.statusbar:CreateFontString(nil, "OVERLAY")
-	end
-	f.timertext:SetFontObject(GameFontHighlight)
-	f.timertext:SetFont(font, fontsize, style)
-	f.timertext:SetHeight(height)
-	f.timertext:SetWidth(timertextwidth)
-	f.timertext:SetPoint("LEFT", f.statusbar, "LEFT", 0, 0)
-	f.timertext:SetJustifyH("RIGHT")
-	f.timertext:SetText("")
-	f.timertext:SetTextColor(timertextcolor[1], timertextcolor[2], timertextcolor[3], timertextcolor[4])
-
-	if not f.text then
-		f.text = f.statusbar:CreateFontString(nil, "OVERLAY")
-	end
-	f.text:SetFontObject(GameFontHighlight)
-	f.text:SetFont(font, fontsize, style)
-	f.text:SetHeight(height)
-	f.text:SetWidth((width - timertextwidth) *.9)
-	f.text:SetPoint("RIGHT", f.statusbar, "RIGHT", 0, 0)
-	f.text:SetJustifyH("LEFT")
-	f.text:SetText(text)
-	f.text:SetTextColor(textcolor[1], textcolor[2], textcolor[3], textcolor[4])
-
-	if handler.onclick then
-		f:EnableMouse(true)
-		f:RegisterForClicks("LeftButtonUp", "RightButtonUp", "MiddleButtonUp", "Button4Up", "Button5Up", "RightButtonDown")
-		f:SetScript("OnClick", onClick)
-		f.icon:EnableMouse(true)
-		f.icon:RegisterForClicks("LeftButtonUp", "RightButtonUp", "MiddleButtonUp", "Button4Up", "Button5Up", "RightButtonDown")
-		f.icon:SetScript("OnClick", onClick)
-	end
-	
-	return f
 end
 
 -- Internal Method
@@ -1720,6 +1810,8 @@ CandyBar.SetCandyBarText = CandyBar.SetText
 CandyBar.SetCandyBarIcon = CandyBar.SetIcon
 CandyBar.SetCandyBarIconPosition = CandyBar.SetIconPosition
 CandyBar.SetCandyBarBackgroundColor = CandyBar.SetBackgroundColor
+CandyBar.SetCandyBarBorderColor = CandyBar.SetBorderColor
+CandyBar.SetCandyBarBorderTexture = CandyBar.SetBorderTexture
 CandyBar.SetCandyBarTextColor = CandyBar.SetTextColor
 CandyBar.SetCandyBarTimerTextColor = CandyBar.SetTimerTextColor
 CandyBar.SetCandyBarFontSize = CandyBar.SetFontSize

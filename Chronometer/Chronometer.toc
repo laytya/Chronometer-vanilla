@@ -4,13 +4,13 @@
 ## Notes: Chronometer - an Ace2 Timer Mod based on AceTimer for Vanilla
 ## Notes-ruRU: Chronometer - мод Ace2 таймера на основе AceTimer
 ## Notes-zhCN: Chronometer - 基于AceTimer的Ace2计时条插件
-## Version: 0.13a
+## Version: 0.14
 ## DefaultState:
 ## Dependencies:
 ## OptionalDeps: Ace2, Babble-2.2, PaintChipsLib, CompostLib, CandyBar, Deformat, GratuityLib, SpellCacheLib, ParserLib, DewdropLib
 ## SavedVariables: ChronometerDB
 
-## X-ReleaseDate: $Date: 2017-03-27 $
+## X-ReleaseDate: $Date: 2022-08-25 $
 ## X-Email: laytya@gmail.com
 ## X-Category: Combat
 ## X-Website: https://github.com/laytya/Chronometer-vanilla
@@ -18,6 +18,8 @@
 
 libs\AceLibrary\AceLibrary.lua
 libs\AceOO-2.0\AceOO-2.0.lua
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.xml 
 
 libs\AceEvent-2.0\AceEvent-2.0.lua
 libs\AceDB-2.0\AceDB-2.0.lua
@@ -38,6 +40,7 @@ libs\ParserLib\optimizer-koKR.lua
 
 libs\PaintChips-2.0\PaintChips-2.0.lua
 libs\CandyBar-2.0\CandyBar-2.0.lua
+libs\LibSharedMedia-3.0\lib.xml
 
 libs\Gratuity-2.0\Gratuity-2.0.lua
 libs\Deformat-2.0\Deformat-2.0.lua
@@ -48,8 +51,9 @@ libs\Waterfall-1.0\Waterfall-1.0.lua
 libs\Tablet-2.0\Tablet-2.0.lua
 libs\FuBarPlugin-2.0\FuBarPlugin-2.0.lua
 
-Core\Chronometer.lua
 Core\Chronometer-Locale.lua
+Core\Chronometer.lua
+
 
 Data\Druid.lua
 Data\Hunter.lua

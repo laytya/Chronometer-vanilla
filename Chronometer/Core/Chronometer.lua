@@ -7,6 +7,8 @@ local L = AceLibrary("AceLocale-2.2"):new("Chronometer")
 local BS = AceLibrary("Babble-Spell-2.2")
 local dewdrop = AceLibrary("Dewdrop-2.0")
 local waterfall 		= AceLibrary("Waterfall-1.0")
+local paint 			= AceLibrary("PaintChips-2.0")
+local self 				= Chronometer
 
 Chronometer:RegisterDB("ChronometerDB")
 
@@ -49,6 +51,8 @@ local defaults = {
 	textcolor = "white",
 	bgcolor = nil,
 	barcolor = "gray",
+	bordercolor = "black",
+	bordertex = "None",
 	bgalpha = nil,
 	text = "$t",
 	showIcon = true,
@@ -63,6 +67,23 @@ local defaults = {
 	
 
 Chronometer:RegisterDefaults('profile', defaults)
+
+local media = LibStub("LibSharedMedia-3.0")
+media:Register("statusbar", "Frost", "Interface\\Addons\\Chronometer\\Textures\\Frost")
+media:Register("statusbar", "banto", "Interface\\Addons\\Chronometer\\Textures\\banto")
+media:Register("statusbar", "smooth", "Interface\\Addons\\Chronometer\\Textures\\smooth")
+media:Register("statusbar", "perl", "Interface\\Addons\\Chronometer\\Textures\\perl")
+media:Register("statusbar", "glaze", "Interface\\Addons\\Chronometer\\Textures\\glaze")
+media:Register("statusbar",	"cilo", "Interface\\Addons\\Chronometer\\Textures\\cilo")
+media:Register("statusbar",	"charcoal", "Interface\\Addons\\Chronometer\\Textures\\Charcoal")
+media:Register("statusbar",	"diagonal", "Interface\\Addons\\Chronometer\\Textures\\Diagonal")
+media:Register("statusbar",	"fifths", "Interface\\Addons\\Chronometer\\Textures\\Fifths")
+media:Register("statusbar",	"smoothv2", "Interface\\Addons\\Chronometer\\Textures\\Smoothv2")
+media:Register("statusbar", "Healbot", "Interface\\Addons\\Chronometer\\Textures\\Healbot")
+media:Register("statusbar", "LiteStep", "Interface\\Addons\\Chronometer\\Textures\\LiteStep")
+media:Register("statusbar", "Rocks", "Interface\\Addons\\Chronometer\\Textures\\Rocks")
+media:Register("statusbar", "Runes", "Interface\\Addons\\Chronometer\\Textures\\Runes")
+media:Register("statusbar", "Xeon", "Interface\\Addons\\Chronometer\\Textures\\Xeon")
 
 local options
 local latins = {I=1, II=2, III=3, IV=4, V=5, VI=6, VII = 7, VIII = 8, IX = 9, X = 10, XI = 11, XII = 12, XIII = 13, XIV = 14} 
@@ -135,8 +156,241 @@ end
 LPrintTable = printTable
 ---------------------------------------------------------------------  ]]
 
-local fubarOptions = { "detachTooltip", "colorText", "text", "lockTooltip", "position", "minimapAttach", "hide", "icon" }
+local function convertcolor(color, ...)
 
+	if type(color) == "string" then
+		return paint:GetRGBPercent(color)
+	elseif type(color) == "table" then
+		return color
+	else 
+		return {color,arg1,arg2}
+end
+
+end
+					
+local fubarOptions = { "detachTooltip", "colorText", "text", "lockTooltip", "position", "minimapAttach", "hide", "icon" }
+do
+	local function set(field, value)
+		self.db.profile[field] = value
+	end
+	local function get(field)
+		return self.db.profile[field]
+	end
+	
+	local function setcolor(field, c1, c2, c3, c4)
+		self.db.profile[field] = {c1, c2, c3, c4}
+	end
+	local function getcolor(field)
+		local color = self.db.profile[field]
+		local r,g,b,a
+		if type(color) == "string" then
+			r,g,b,a = paint:GetRGBPercent(color)
+		else
+			r,g,b,a = unpack(color)
+		end
+		return r,g,b,a
+	end
+	local hcolor = "|cFF77BBFF"
+	options = {
+		type = "group",
+		icon = "Interface\\AddOns\\Chronometer\\icon",
+		args = {
+			header = {
+				type = "header",
+				name = hcolor..L["Chronometer Options"].."  |c88888888 v"..Chronometer.revision,
+				icon = "Interface\\AddOns\\Chronometer\\icon",
+				order = 1,
+			}, 
+			mspacer = {	type = "header",	order = 3	},
+			main = {
+				name = hcolor.. L["General"], type = "group", desc = L["General options"], order = 10,
+				args = {
+					aheader = {type = "header",	name = hcolor..L["General options"], order = 1 },
+					anchor = {name = L["Anchor"], desc = L["Shows the dragable anchor."], type = "execute", func = "ToggleAnchor", order = 80, } ,
+					
+					ghost = {name = L["Ghost"], desc = L["Change the amount of time that ghost bars stay up."], type = "range",  order = 30,
+						get = get,
+						set = set,
+						min = 0, max = 30,
+						passValue = 'ghost'},
+					kill = {
+						name = L["Kill"], desc = L["Toggles whether bars disappear when killing things."], type = "toggle",  order = 40,
+						get = get,
+						set = set,
+						passValue = 'fadeonkill'},
+					fade = {
+						name = L["Fade"], desc = L["Toggles whether bars disappear when spells fade."], type = "toggle",  order = 50,
+						get = get,
+						set = set,
+						passValue = 'fadeonfade'},
+					self = {
+						name = L["Self"], desc = L["Toggles bars for spell durations on the player."], type = "toggle",  order = 60,
+						get = get,
+						set = set,
+						passValue = 'selfbars'},
+					onlyself = {
+						name = L["Only self"], desc =  L["Only self"], type = "toggle", order = 70,
+						get = get,
+						set = set,
+						passValue = 'onlyself',
+					},
+				},
+			},
+			timers = {
+				name = hcolor.. L["Timers"], type = "group", desc = L["Timers visibility options"], order = 20,
+				args = {
+					aheader = {type = "header",	name = hcolor..L["Timers visibility options"], order = 1 },
+					spellt = {
+						classpellheader = {type = "header", name = hcolor..L["Class Spell timers"], order = 1},
+						name = L["Class Spells"], desc = L["Class Spell timers"], type = "group", order = 20,
+						args = {},
+					},
+					eventt = {
+						classeventheader = {type = "header", name = hcolor..L["Class Event timers"], order = 1},
+						name = L["Class Events"], desc = L["Class Event timers"], type = "group", order = 30,
+						args = {},
+					},
+			racial = {
+						rheader = {type = "header", name = hcolor..L["Race specific timers"], order = 1},
+						name = L["Racial"], desc = L["Race specific timers"], type = "group", order = 50,
+						args = {},
+					},
+			common = {
+						comheader = {type = "header", name = hcolor..L["Common timers"], order = 1},
+						name = L["Common"], desc = L["Common timers (trinkets, potions, etc.)"], type = "group", order = 70,
+						args = {},
+					},
+				},
+					},
+						
+			bar = {
+				name = hcolor.. L["Bar"], desc=L["CandyBar options"], type = "group", order = 50,
+				args = {
+					test = {name = L["Test"], desc = L["Runs test bars."], type = "execute", func = "RunTest", order = 10,},
+					texture = {
+						name = L["Bar Texture"], desc = L["Changes the texture of the timer bars."], type = "text", order = 20,
+						get = get,
+						set = set,
+						validate = media:List('statusbar'),
+						passValue = 'bartex',
+					},
+					color = {
+						name = L["Bar Color"], desc=L["Set the default bar color."], type = 'color',order = 30,
+						get = getcolor,
+						set = setcolor,
+						--validate = colors,
+						passValue = 'barcolor',
+					},
+					bgcolor = {
+						name = L["Background Color"], desc=L["Set the bar background color."], type = 'color',order = 40,
+						get = getcolor,
+						set = setcolor,
+						--validate = colors,
+						passValue = 'bgcolor',
+					},
+					bgalpha = {
+						name = L["Background Alpha"],desc = L["Alpha value of the bar background."],type = "range",order = 50,
+						get = get,
+						set = set,
+						min = 0.0, max = 1.0,
+						passValue = 'bgalpha',
+					},
+					
+					bordercolor = {
+						name = "Border Color", desc="Set the border's color.", type = 'color',order = 60,
+						get = getcolor,
+						set = setcolor,
+						--validate = colors,
+						passValue = 'bordercolor',
+					},
+					bordertex = {
+						name = "Border Texture", desc = "Changes the texture of the border of bars.", type = "text", order = 70,
+						get = get,
+						set = set,
+						validate = media:List('border'),
+						passValue = 'bordertex',
+					},
+					
+					height = {
+						name = L["Bar Height"], desc=L["Set the bar height."], type = "range",order = 90,
+						get = get,
+						set = set,
+						min = 8, max = 30, step = 1,
+						passValue = 'barheight',
+					},
+					width = {
+						name = L["Bar Width"], desc=L["Set the bar width."], type = "range",order = 100,
+						get = get,
+						set = set,
+						min = 50, max = 300, step = 1,
+						passValue = 'barwidth',
+					},
+					scale = {
+						name = L["Bar Scale"], desc=L["Set the bar scale."], type = "range",order = 103,
+						get = get,
+						set = set,
+						min = 0.5, max = 1.5,
+						passValue = 'barscale',
+					},
+					spacing = {
+						name = L["Bar Vertical Spacing"], desc=L["Set the bar vertical spacing."], type = "range",order = 105,
+						get = get,
+						set = set,
+						min = 0, max = 15, step = 1,
+						passValue = 'spacing',
+					},
+					iconposition = {
+						name = L["Icon Position"], desc = L["Changes icon position."], type = "text", order = 107,
+						get = get,
+						set = set,
+						validate = { "LEFT", "RIGHT"},
+						passValue = 'iconposition',
+					},
+					growth = {
+						name = L["Bar Growth"], desc=L["Toggles bar growing up or downwards."], type = "toggle",order = 110,
+						get = function () return self.db.profile.growup end,
+						set = function (v) self.db.profile.growup = v
+						self:SetCandyBarGroupGrowth("Chronometer", self.db.profile.growup) end,
+					},
+					reverse = {
+						name = L["Reverse"], desc = L["Toggles if bars are reversed (fill up instead of emptying)."], type = "toggle",order = 120,
+						get = get,
+						set = set,
+						passValue = 'reverse',
+					},
+					text = {
+						name = L["Bar Text"], desc=L["Sets the text to be displayed on the bar."], type = "text",order = 130,
+						usage = L["Use $s for spell name and $t for the target's name."],
+						get = get,
+						set = set,
+						passValue = 'text',
+					},
+					textcolor = {
+						name = L["Text Color"], desc=L["Set the bar text color."], type = "color",order = 140,
+						get = getcolor,
+						set = setcolor,
+						--validate = colors,
+						passValue = 'textcolor',
+				},
+					textsize = {
+						name = L["Text Size"], desc = L["Set the bar text size."], type = "range",order = 150,
+						get = get,
+						set = set,
+						min = 8, max = 20, step = 0.5,
+						passValue = 'textsize',
+			},
+			
+		},
+			},
+			fubar = { 
+				type = "group", name = L["Fubar plugin"], desc = L["Fubar plugin options."], order=-15,
+				args = {}
+			},
+		},
+	}
+
+
+end
 --Code by Grayhoof (SCT)
 local function CloneTable(t)				-- return a copy of the table t
 	local new = {};					-- create a new table
@@ -165,9 +419,11 @@ function moveFubarOptions(source)
 	end
 end
 
+
+
 function Chronometer:OnInitialize()
 
-	local paint = AceLibrary("PaintChips-2.0")
+	
 	self.spellcache = AceLibrary("SpellCache-1.0")
 	self.parser = ParserLib:GetInstance("1.1")
 	self.gratuity = AceLibrary("Gratuity-2.0")
@@ -198,171 +454,8 @@ function Chronometer:OnInitialize()
 		["fifths"] = "Interface\\Addons\\Chronometer\\Textures\\Fifths",
 		["smoothv2"] = "Interface\\Addons\\Chronometer\\Textures\\Smoothv2",
 	}
-	local hcolor = "|cFF77BBFF"
-	options = {
-		type = "group",
-		icon = "Interface\\AddOns\\Chronometer\\icon",
-		args = {
-			header = {
-				type = "header",
-				name = hcolor..L["Chronometer Options"].."  |c88888888 v"..self.revision,
-				icon = "Interface\\AddOns\\Chronometer\\icon",
-				order = 1,
-			}, 
-			mspacer = {	type = "header",	order = 3	},
-			main = {
-				name = hcolor.. L["General"], type = "group", desc = L["General options"], order = 10,
-				args = {
-					aheader = {type = "header",	name = hcolor..L["General options"], order = 1 },
-					anchor = {name = L["Anchor"], desc = L["Shows the dragable anchor."], type = "execute", func = "ToggleAnchor", order = 80, } ,
-					
-					ghost = {name = L["Ghost"], desc = L["Change the amount of time that ghost bars stay up."], type = "range",  order = 30,
-						get = function () return self.db.profile.ghost end,
-						set = function (v) self.db.profile.ghost = v end,
-						min = 0, max = 30},
-					kill = {
-						name = L["Kill"], desc = L["Toggles whether bars disappear when killing things."], type = "toggle",  order = 40,
-						get = function() return self.db.profile.fadeonkill end,
-						set = function(f) self.db.profile.fadeonkill = f end,},
-					fade = {
-						name = L["Fade"], desc = L["Toggles whether bars disappear when spells fade."], type = "toggle",  order = 50,
-						get = function() return self.db.profile.fadeonfade end,
-						set = function(f) self.db.profile.fadeonfade = f end,},
-					self = {
-						name = L["Self"], desc = L["Toggles bars for spell durations on the player."], type = "toggle",  order = 60,
-						get = function() return self.db.profile.selfbars end,
-						set = function(f) self.db.profile.selfbars = f end,},
-					onlyself = {
-						name = L["Only self"], desc =  L["Only self"], type = "toggle", order = 70,
-						get = function() return self.db.profile.onlyself end,
-						set = function(f) self.db.profile.onlyself = f end,
-					},
-				},
-			},
-			timers = {
-				name = hcolor.. L["Timers"], type = "group", desc = L["Timers visibility options"], order = 20,
-				args = {
-					aheader = {type = "header",	name = hcolor..L["Timers visibility options"], order = 1 },
-					spellt = {
-						classpellheader = {type = "header", name = hcolor..L["Class Spell timers"], order = 1},
-						name = L["Class Spells"], desc = L["Class Spell timers"], type = "group", order = 20,
-						args = {},
-					},
-					eventt = {
-						classeventheader = {type = "header", name = hcolor..L["Class Event timers"], order = 1},
-						name = L["Class Events"], desc = L["Class Event timers"], type = "group", order = 30,
-						args = {},
-					},
-			racial = {
-						rheader = {type = "header", name = hcolor..L["Race specific timers"], order = 1},
-						name = L["Racial"], desc = L["Race specific timers"], type = "group", order = 50,
-						args = {},
-					},
-			common = {
-						comheader = {type = "header", name = hcolor..L["Common timers"], order = 1},
-						name = L["Common"], desc = L["Common timers (trinkets, potions, etc.)"], type = "group", order = 70,
-						args = {},
-					},
-				},
-			},
-						
-			bar = {
-				name = hcolor.. L["Bar"], desc=L["CandyBar options"], type = "group", order = 50,
-				args = {
-					test = {name = L["Test"], desc = L["Runs test bars."], type = "execute", func = "RunTest", order = 10,},
-					texture = {
-						name = L["Bar Texture"], desc = L["Changes the texture of the timer bars."], type = "text", order = 20,
-						get = function () return self.db.profile.bartex end,
-						set = function (v) self.db.profile.bartex = v end,
-						validate = { "default", "banto", "cilo", "charcoal", "diagonal", "fifths", "glaze", "perl", "smooth", "smoothv2" },
-					},
-					color = {
-						name = L["Bar Color"], desc=L["Set the default bar color."], type = "text",order = 30,
-						get = function () return self.db.profile.barcolor end,
-						set = function (v) self.db.profile.barcolor = v end,
-						validate = colors,
-					},
-					bgcolor = {
-						name = L["Background Color"], desc=L["Set the bar background color."], type = "text",order = 40,
-						get = function () return self.db.profile.bgcolor end,
-						set = function (v) self.db.profile.bgcolor = v end,
-						validate = colors,
-					},
-					bgalpha = {
-						name = L["Background Alpha"],desc = L["Alpha value of the bar background."],type = "range",order = 50,
-						get = function () return self.db.profile.bgalpha end,
-						set = function (v) self.db.profile.bgalpha = v end,
-						min = 0.0, max = 1.0,
-					},
-					
-					height = {
-						name = L["Bar Height"], desc=L["Set the bar height."], type = "range",order = 90,
-						get = function () return self.db.profile.barheight end,
-						set = function (v) self.db.profile.barheight = v end,
-						min = 8, max = 30, step = 1,
-					},
-					width = {
-						name = L["Bar Width"], desc=L["Set the bar width."], type = "range",order = 100,
-						get = function () return self.db.profile.barwidth end,
-						set = function (v) self.db.profile.barwidth = v end,
-						min = 50, max = 300, step = 1,
-					},
-					scale = {
-						name = L["Bar Scale"], desc=L["Set the bar scale."], type = "range",order = 103,
-						get = function () return self.db.profile.barscale end,
-						set = function (v) self.db.profile.barscale = v end,
-						min = 0.5, max = 1.5,
-					},
-					spacing = {
-						name = L["Bar Vertical Spacing"], desc=L["Set the bar vertical spacing."], type = "range",order = 105,
-						get = function () return self.db.profile.spacing end,
-						set = function (v) self.db.profile.spacing = v end,
-						min = 0, max = 15, step = 1,
-					},
-					iconposition = {
-						name = L["Icon Position"], desc = L["Changes icon position."], type = "text", order = 107,
-						get = function () return self.db.profile.iconposition end,
-						set = function (v) self.db.profile.iconposition = v end,
-						validate = { "LEFT", "RIGHT"},
-					},
-					growth = {
-						name = L["Bar Growth"], desc=L["Toggles bar growing up or downwards."], type = "toggle",order = 110,
-						get = function () return self.db.profile.growup end,
-						set = function (v) self.db.profile.growup = v
-						self:SetCandyBarGroupGrowth("Chronometer", self.db.profile.growup) end,
-					},
-					reverse = {
-						name = L["Reverse"], desc = L["Toggles if bars are reversed (fill up instead of emptying)."], type = "toggle",order = 120,
-						get = function() return self.db.profile.reverse end,
-						set = function(f) self.db.profile.reverse = f end,
-					},
-					text = {
-						name = L["Bar Text"], desc=L["Sets the text to be displayed on the bar."], type = "text",order = 130,
-						usage = L["Use $s for spell name and $t for the target's name."],
-						get = function () return self.db.profile.text end,
-						set = function (v) self.db.profile.text = v end,
-					},
-					textcolor = {
-						name = L["Text Color"], desc=L["Set the bar text color."], type = "text",order = 140,
-						get = function () return self.db.profile.textcolor end,
-						set = function (v) self.db.profile.textcolor = v end,
-						validate = colors,
-				},
-					textsize = {
-						name = L["Text Size"], desc = L["Set the bar text size."], type = "range",order = 150,
-						get = function () return self.db.profile.textsize end,
-						set = function (v) self.db.profile.textsize = v end,
-						min = 8, max = 20, step = 0.5,
-			},
-			
-		},
-			},
-			fubar = { 
-				type = "group", name = L["Fubar plugin"], desc = L["Fubar plugin options."], order=-15,
-				args = {}
-			},
-		},
-	}
+	
+	
 
 --[[
 	options.args.config = {
@@ -599,9 +692,9 @@ function Chronometer:RunTest()
 		text = gsub(text, "%t", target)
 		text = gsub(text, "%s", name)
 		local icon = "Interface\\Icons\\Spell_Shadow_ManaBurn"
-		local color = self.db.profile.barcolor
+		local color = convertcolor(self.db.profile.barcolor)
 
-		self:RegisterCandyBar(id, duration, text, icon, color, color, color, "red")
+		self:RegisterCandyBar(id, duration, text, icon, color[1], color[2], color[3], 1,0,0)
 		self:RegisterCandyBarWithGroup(id, "Chronometer")
 		if self.db.profile.barscale then self:SetCandyBarScale(id, self.db.profile.barscale) end
 		if self.db.profile.barwidth then self:SetCandyBarWidth(id, self.db.profile.barwidth) end
@@ -609,9 +702,11 @@ function Chronometer:RunTest()
 		if self.db.profile.iconposition then self:SetCandyBarIconPosition(id,self.db.profile.iconposition) end
 		if self.db.profile.spacing then self:SetCandyBarGroupVerticalSpacing("Chronometer", self.db.profile.spacing) end
 		if self.db.profile.textsize then self:SetCandyBarFontSize(id, self.db.profile.textsize) end
-		if self.db.profile.bartex then self:SetCandyBarTexture(id, self.textures[self.db.profile.bartex]) end
-		if self.db.profile.textcolor then self:SetCandyBarTextColor(id, self.db.profile.textcolor) end
-		if self.db.profile.bgcolor then self:SetCandyBarBackgroundColor(id, self.db.profile.bgcolor, self.db.profile.bgalpha) end
+		if self.db.profile.bartex then self:SetCandyBarTexture(id, media:Fetch('statusbar', self.db.profile.bartex)) end
+		if self.db.profile.textcolor then local c = convertcolor(self.db.profile.textcolor); self:SetCandyBarTextColor(id, c[1], c[2], c[3] ) end
+		if self.db.profile.bgcolor then local c = convertcolor(self.db.profile.bgcolor); self:SetCandyBarBackgroundColor(id, c[1], c[2], c[3] , self.db.profile.bgalpha) end
+		if self.db.profile.bordercolor then local c = convertcolor(self.db.profile.bordercolor); self:SetCandyBarBorderColor(id, c[1], c[2], c[3] ) end
+		if self.db.profile.bordertex then self:SetCandyBarBorderTexture(id, media:Fetch('border', self.db.profile.bordertex)) end
 		if self.db.profile.ghost then self:SetCandyBarFade(id, self.db.profile.ghost, true) end
 		self:SetCandyBarCompletion(id, self.StopBar, self, id)
 		self:SetCandyBarReversed(id, self.db.profile.reverse)
@@ -686,13 +781,14 @@ function Chronometer:StartTimer(timer, name, target, rank, durmod)
 	text = gsub(text, "$s", name)
 	local icon = timer.x.tx or self:GetTexture(name, timer.x)
 	local color = timer.x.cr or self.db.profile.barcolor
+	color = convertcolor(color)
 	local fade = 0.5
 
 	if timer.x.rc and self.db.profile.ghost then
 		fade = self.db.profile.ghost
 	end
 
-	self:RegisterCandyBar(id, duration, text, icon, color, color, color, "red")
+	self:RegisterCandyBar(id, duration, text, icon, color[1], color[2], color[3], 1,0 ,0)
 	self:RegisterCandyBarWithGroup(id, "Chronometer")
 	if self.db.profile.barscale then self:SetCandyBarScale(id, self.db.profile.barscale) end
 	if self.db.profile.barwidth then self:SetCandyBarWidth(id, self.db.profile.barwidth) end
@@ -700,9 +796,11 @@ function Chronometer:StartTimer(timer, name, target, rank, durmod)
 	if self.db.profile.iconposition then self:SetCandyBarIconPosition(id,self.db.profile.iconposition) end
 	if self.db.profile.spacing then self:SetCandyBarGroupVerticalSpacing("Chronometer", self.db.profile.spacing) end
 	if self.db.profile.textsize then self:SetCandyBarFontSize(id, self.db.profile.textsize) end
-	if self.db.profile.bartex then self:SetCandyBarTexture(id, self.textures[self.db.profile.bartex]) end
-	if self.db.profile.textcolor then self:SetCandyBarTextColor(id, self.db.profile.textcolor) end
-	if self.db.profile.bgcolor then self:SetCandyBarBackgroundColor(id, self.db.profile.bgcolor, self.db.profile.bgalpha) end
+	if self.db.profile.bartex then self:SetCandyBarTexture(id, media:Fetch('statusbar', self.db.profile.bartex)) end
+	if self.db.profile.textcolor then local c = convertcolor(self.db.profile.textcolor); self:SetCandyBarTextColor(id, c[1], c[2], c[3] ) end
+	if self.db.profile.bgcolor then local c = convertcolor(self.db.profile.bgcolor); self:SetCandyBarBackgroundColor(id, c[1], c[2], c[3] , self.db.profile.bgalpha) end
+	if self.db.profile.bordercolor then local c = convertcolor(self.db.profile.bordercolor); self:SetCandyBarBorderColor(id, c[1], c[2], c[3] ) end
+	if self.db.profile.bordertex then self:SetCandyBarBorderTexture(id, media:Fetch('border', self.db.profile.bordertex)) end
 	self:SetCandyBarFade(id, fade, true)
 	self:SetCandyBarCompletion(id, self.StopBar, self, id)
 	self:SetCandyBarReversed(id, self.db.profile.reverse)
