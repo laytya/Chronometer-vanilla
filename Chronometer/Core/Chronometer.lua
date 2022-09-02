@@ -49,7 +49,7 @@ local defaults = {
 	iconposition = "LEFT",
 	textsize = 10,
 	textcolor = "white",
-	bgcolor = nil,
+	bgcolor = "teal",
 	barcolor = "gray",
 	bordercolor = "black",
 	bordertex = "None",
@@ -185,9 +185,11 @@ do
 		local r,g,b,a
 		if type(color) == "string" then
 			r,g,b,a = paint:GetRGBPercent(color)
-		else
+		elseif type(color) == "table" then
 			r,g,b,a = unpack(color)
-		end
+		elseif color == nil
+			r,g,b,a = 1, 1, 1, 1
+		end		
 		return r,g,b,a
 	end
 	local hcolor = "|cFF77BBFF"
