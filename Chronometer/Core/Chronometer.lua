@@ -187,7 +187,7 @@ do
 			r,g,b,a = paint:GetRGBPercent(color)
 		elseif type(color) == "table" then
 			r,g,b,a = unpack(color)
-		elseif color == nil
+		elseif color == nil then
 			r,g,b,a = 1, 1, 1, 1
 		end		
 		return r,g,b,a
@@ -208,7 +208,7 @@ do
 				name = hcolor.. L["General"], type = "group", desc = L["General options"], order = 10,
 				args = {
 					aheader = {type = "header",	name = hcolor..L["General options"], order = 1 },
-					anchor = {name = L["Anchor"], desc = L["Shows the dragable anchor."], type = "execute", func = "ToggleAnchor", order = 80, } ,
+					
 					
 					ghost = {name = L["Ghost"], desc = L["Change the amount of time that ghost bars stay up."], type = "range",  order = 30,
 						get = get,
@@ -269,6 +269,7 @@ do
 				name = hcolor.. L["Bar"], desc=L["CandyBar options"], type = "group", order = 50,
 				args = {
 					test = {name = L["Test"], desc = L["Runs test bars."], type = "execute", func = "RunTest", order = 10,},
+					anchor = {name = L["Anchor"], desc = L["Shows the dragable anchor."], type = "execute", func = "ToggleAnchor", order = 5, } ,
 					texture = {
 						name = L["Bar Texture"], desc = L["Changes the texture of the timer bars."], type = "text", order = 20,
 						get = get,
