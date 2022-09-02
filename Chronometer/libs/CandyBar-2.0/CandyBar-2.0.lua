@@ -10,7 +10,7 @@ Dependencies: AceLibrary, AceOO-2.0, PaintChips-2.0
 ]]
 local match = string.match
 local getn,setn,tinsert = table.getn, table.setn,table.insert
-local vmajor, vminor = "CandyBar-2.0", "$Revision: 16010 $" 
+local vmajor, vminor = "CandyBar-2.0", "$Revision: 16011 $" 
 
 if not AceLibrary then error(vmajor .. " requires AceLibrary.") end
 if not AceLibrary:IsNewVersion(vmajor, vminor) then return end
@@ -1010,13 +1010,16 @@ function CandyBar:SetBorderTexture(name, texture)
 	if not texture then
 		texture = defaults.bordertexture
 	end
-
+	
+	local bgcolor = handler.bgcolor or defaults.bgcolor
+	local bordercolor = handler.bordercolor or defaults.bordercolor
+	
 	handler.bordertexture = texture
 	local backdrop = handler.frame:GetBackdrop()
 	backdrop.edgefile = texture
 	handler.frame:SetBackdrop(backdrop)
-	handler.frame:SetBackdropBorderColor(unpack(handler.bordercolor, 1, 4))
-	handler.frame:SetBackdropColor(unpack(handler.bgcolor, 1, 4))
+	handler.frame:SetBackdropBorderColor(unpack(bordercolor, 1, 4))
+	handler.frame:SetBackdropColor(unpack(bgcolor, 1, 4))
 
 	return true
 end
