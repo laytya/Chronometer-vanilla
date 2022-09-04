@@ -10,7 +10,7 @@ Dependencies: AceLibrary
 ]]
 
 local MAJOR_VERSION = "Dewdrop-2.0"
-local MINOR_VERSION = "$Revision: 17882 $"
+local MINOR_VERSION = "$Revision: 17890 $"
 
 if not AceLibrary then error(MAJOR_VERSION .. " requires AceLibrary") end
 if not AceLibrary:IsNewVersion(MAJOR_VERSION, MINOR_VERSION) then return end
@@ -1054,6 +1054,7 @@ function Dewdrop:FeedAceOptionsTable(options, difference)
 				end
 				local name = (v.guiIconOnly and v.icon) and "" or (v.guiName or v.name)
 				local desc = v.desc
+				local passValue = v.passValue
 				local iconHeight = v.iconHeight or 16
 				local iconWidth = v.iconWidth or 16
 				local iconCoordLeft = v.iconCoordLeft
