@@ -10,7 +10,7 @@ Dependencies: AceLibrary
 ]]
 
 local MAJOR_VERSION = "Dewdrop-2.0"
-local MINOR_VERSION = "$Revision: 17890 $"
+local MINOR_VERSION = "$Revision: 17900 $"
 
 if not AceLibrary then error(MAJOR_VERSION .. " requires AceLibrary") end
 if not AceLibrary:IsNewVersion(MAJOR_VERSION, MINOR_VERSION) then return end
@@ -1360,6 +1360,7 @@ function Dewdrop:FeedAceOptionsTable(options, difference)
 		end
 	elseif options.type == "text" and type(options.validate) == "table" then
 		local current
+		local passValue = options.passValue
 		if type(options.get) == "function" then
 			current = options.get(passValue)
 		elseif options.get ~= false then
