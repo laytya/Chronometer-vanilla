@@ -11,7 +11,7 @@ function Chronometer:DruidSetup()
 	self:AddGroup(1, true,  "MAGENTA")
 	self:AddGroup(2, false, "MAROON")
 	self:AddGroup(3, true,  "MAGENTA")
-
+--                kind,       name,                  duration, targeted, isgain, selforselect, extra
 	self:AddTimer(self.SPELL, BS["Abolish Poison"],         8, 1,1,1)
 	self:AddTimer(self.SPELL, BS["Bash"],                   2, 1,0,0, { d={rs=1, tn=BS["Brutal Impact"], tb=0.5} })
 	self:AddTimer(self.SPELL, BS["Barkskin"],              15, 0,1,1)
@@ -35,7 +35,7 @@ function Chronometer:DruidSetup()
 	self:AddTimer(self.SPELL, BS["Rip"],                   12, 1,0,0, { rc=true })
 	self:AddTimer(self.SPELL, BS["Soothe Animal"],         15, 1,0,0, { rc=true })
 	self:AddTimer(self.SPELL, BS["Starfire"],               0, 1,0,0, { ea={[BS["Starfire Stun"]]=1} })
-	self:AddTimer(self.SPELL, BS["Tiger's Fury"],           6, 0,1,1, { rc=true })
+	self:AddTimer(self.SPELL, BS["Tiger's Fury"],           6, 0,1,1, { rc=true, d={tn=BS["Blood Frenzy"], tb=3}  }) -- turtle WOW
 
 	self:AddTimer(self.EVENT, BS["Entangling Roots"],      12, 1,0,1, { gr=1, d={rs=3}, a=1 })
 	self:AddTimer(self.EVENT, BS["Nature's Grace"],        15, 0,1,1, { cr="GREEN", a=1 })
@@ -43,6 +43,7 @@ function Chronometer:DruidSetup()
 	self:AddTimer(self.EVENT, BS["Clearcasting"],          15, 0,1,1, { cr="GREEN", a=1 })
 	self:AddTimer(self.EVENT, BS["Pounce Bleed"],          18, 1,0,0, { xn=BS["Pounce"] })
 	self:AddTimer(self.EVENT, BS["Starfire Stun"],          3, 1,0,0, { xn=BS["Starfire"] })
+	self:AddTimer(self.EVENT, BS["Blood Frenzy"],          0, 0,1,1, { d={tn=BS["Blood Frenzy"], tb=6}, a=1 }) -- turtle WOW
 end
 
 table.insert(Chronometer.dataSetup, Chronometer.DruidSetup)

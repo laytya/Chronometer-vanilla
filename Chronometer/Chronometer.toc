@@ -4,7 +4,7 @@
 ## Notes: Chronometer - an Ace2 Timer Mod based on AceTimer for Vanilla
 ## Notes-ruRU: Chronometer - мод Ace2 таймера на основе AceTimer
 ## Notes-zhCN: Chronometer - 基于AceTimer的Ace2计时条插件
-## Version: 0.14
+## Version: 0.15
 ## DefaultState:
 ## Dependencies:
 ## OptionalDeps: Ace2, Babble-2.2, PaintChipsLib, CompostLib, CandyBar, Deformat, GratuityLib, SpellCacheLib, ParserLib, DewdropLib

@@ -170,7 +170,7 @@ function AceConsole:CustomPrint(r, g, b, frame, delay, connector, a1, a2, a3, a4
 		for k = 1, n do
 			tmp[k] = tostring(tmp[k])
 		end
-		print(table.concat(tmp, connector or " "), self, r, g, b, frame or self.printFrame, delay)
+		print(table.concat(tmp, connector or " "), self, r, g, b, frame , delay) --or self.printFrame
 		for k,v in pairs(tmp) do
 			tmp[k] = nil
 		end

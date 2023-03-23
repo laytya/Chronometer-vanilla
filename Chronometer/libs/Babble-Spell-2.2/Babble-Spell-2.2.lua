@@ -3099,6 +3099,7 @@ BabbleSpell:RegisterTranslations("deDE", function()
 		["Corrupted Blood"] = "Verderbtes Blut",
 		["Corruption"] = "Verderbnis",
 		["Counterattack"] = "Gegenangriff",
+		["Counterspell - Silenced"] = "Counterspell - Silenced",  --  Need to translated
 		["Counterspell"] = "Gegenzauber",
 		["Cower"] = "Ducken",
 		["Create Firestone"] = "Feuerstein herstellen",
