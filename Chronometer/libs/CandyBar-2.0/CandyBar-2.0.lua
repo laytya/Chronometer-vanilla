@@ -1437,7 +1437,7 @@ function CandyBar:Update(name)
 		m = floor(m/60)
 		local s = t - ((h*3600) + (m*60))
 		if h > 0 then
-			timetext = string.format("%d:%02d", h, m)
+			timetext = string.format("%d:%02d"), h, m)
 		elseif m > 0 then
 			timetext = string.format("%d:%02d", m, floor(s))
 		elseif s < 10 then
