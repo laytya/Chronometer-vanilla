@@ -102,6 +102,7 @@ L:RegisterTranslations("enUS", function() return {
 	
 	-- These all need to be added to Babble-Spell!!!
 	["Improved Fire Totems"] = true,
+	["Mind Quickening"] = true,
 } end)
 
 L:RegisterTranslations("ruRU", function() return {
@@ -207,6 +208,7 @@ L:RegisterTranslations("ruRU", function() return {
 	-- These all need to be added to Babble-Spell!!!
 	
 	["Improved Fire Totems"] = "Улучшенный тотем огня",
+	["Mind Quickening"] = "Скорость мысли",
 } end)
 
 L:RegisterTranslations("deDE", function() return {
@@ -285,6 +287,7 @@ L:RegisterTranslations("deDE", function() return {
 	--["Healing Way"] = true,
 	--["Winter's Chill"] = true,
 	--["Improved Fire Totems"] = true,
+	--["Mind Quickening"] = true,
 	
 	["Fubar plugin"] = "Fubar plugin",
 	["Fubar plugin options."] = "Fubar plugin options.",
@@ -365,7 +368,7 @@ L:RegisterTranslations("frFR", function() return {
 	--["Hide"] = true,
 	
 	-- These all need to be added to Babble-Spell!!!
-	
+	--["Mind Quickening"] = true,
 } end)
 
 L:RegisterTranslations("koKR", function() return {
@@ -448,7 +451,7 @@ L:RegisterTranslations("koKR", function() return {
 	["Hide"] = "숨기기",
 	
 	-- These all need to be added to Babble-Spell!!!
-	
+	--["Mind Quickening"] = true,
 } end)
 
 L:RegisterTranslations("zhCN", function() return {
@@ -531,5 +534,5 @@ L:RegisterTranslations("zhCN", function() return {
 	["Hide"] = "隐藏",
 	
 	-- These all need to be added to Babble-Spell!!!
-	
+	--["Mind Quickening"] = true,
 } end)
